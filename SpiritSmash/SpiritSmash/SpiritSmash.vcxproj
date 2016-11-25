@@ -70,12 +70,20 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Assets.cpp" />
+    <ClCompile Include="Field.cpp" />
+    <ClCompile Include="ForestField.cpp" />
+    <ClCompile Include="Game.cpp" />
     <ClCompile Include="Main.cpp" />
+    <ClCompile Include="Platform.cpp" />
     <ClCompile Include="Spirit.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Assets.h" />
     <ClInclude Include="Constants.h" />
+    <ClInclude Include="Field.h" />
+    <ClInclude Include="ForestField.h" />
+    <ClInclude Include="Game.h" />
+    <ClInclude Include="Platform.h" />
     <ClInclude Include="Spirit.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

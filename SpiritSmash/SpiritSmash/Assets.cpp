@@ -2,22 +2,22 @@
 #include "Constants.h"
 
 // Texture assets
-Texture* g_pSpiritTex          = 0;
-Texture* g_pPlatformEndTex     = 0;
-Texture* g_pPlatformMid1Tex    = 0;
-Texture* g_pPlatformMid2Tex    = 0;
+Texture* g_pSpiritTex                       = 0;
+Texture* g_pPlatformEndTex                  = 0;
+Texture* g_pPlatformMid1Tex                 = 0;
+Texture* g_pPlatformMid2Tex                 = 0;
 
 // Static Mesh assets
-StaticMesh* g_pPlatformEndMesh = 0;
-StaticMesh* g_pPlatformMidMesh = 0;
-StaticMesh* g_pSkysphereMesh   = 0;
+StaticMesh* g_pPlatformLeftMesh             = 0;
+StaticMesh* g_pPlatformMidMesh              = 0;
+StaticMesh* g_pPlatformLeftMesh             = 0;
+StaticMesh* g_pSkysphereMesh                = 0;
 
 // Animated Mesh assets
-AnimatedMesh* g_pSpiritAnimMesh = 0;
+AnimatedMesh* g_pSpiritAnimMesh             = 0;
 
 // Shared Materials
-DiffuseMaterial* g_pDefaultDiffuseMaterial = 0;
-ToonMaterial*    g_pDefaultToonMaterial    = 0;
+ToonMaterial*    g_pDefaultMaterial         = 0;
 
 // Assets loaded flag
 static int s_nLoaded = 0;
@@ -40,11 +40,14 @@ void LoadAssets()
         g_pPlatformMid2Tex->LoadBMP("Data/Textures/platform_mid_2_tex.bmp");
 
         // Static Meshes
-        g_pPlatformEndMesh = new StaticMesh();
-        g_pPlatformEndMesh->Load("Data/StaticMeshes/platform_end.obj");
+        g_pPlatformLeftMesh = new StaticMesh();
+        g_pPlatformLeftMesh->Load("Data/StaticMeshes/platform_left.obj");
 
         g_pPlatformMidMesh = new StaticMesh();
         g_pPlatformMidMesh->Load("Data/StaticMeshes/platform_mid.obj");
+
+        g_pPlatformLeftMesh = new StaticMesh();
+        g_pPlatformLeftMesh->Load("Data/StaticMeshes/platform_right.obj");
 
         g_pSkysphereMesh = new StaticMesh();
         g_pSkysphereMesh->Load("Data/StaticMeshes/skysphere.obj");
@@ -54,12 +57,9 @@ void LoadAssets()
         g_pSpiritAnimMesh->Load("Data/AnimatedMeshes/AM_Spirit/spirit.amf");
 
         // Shared Materials
-        g_pDefaultDiffuseMaterial = new DiffuseMaterial();
-        g_pDefaultDiffuseMaterial->SetColor(1.0f, 1.0f, 1.0f, 1.0f);
-
-        g_pDefaultToonMaterial = new ToonMaterial();
-        g_pDefaultToonMaterial->SetColor(1.0f, 1.0f, 1.0f, 1.0f);
-        g_pDefaultToonMaterial->SetLightingIntervalCount(LIGHTING_INTERVALS);
+        g_pDefaultMaterial = new ToonMaterial();
+        g_pDefaultMaterial->SetColor(1.0f, 1.0f, 1.0f, 1.0f);
+        g_pDefaultMaterial->SetLightingIntervalCount(LIGHTING_INTERVALS);
 
         s_nLoaded = 1;
     }
@@ -74,14 +74,14 @@ void DestroyAssets()
     delete g_pPlatformMid2Tex;
 
     // Static Meshes
-    delete g_pPlatformEndMesh;
+    delete g_pPlatformLeftMesh;
     delete g_pPlatformMidMesh;
+    delete g_pPlatformRightMesh;
     delete g_pSkysphereMesh;
 
     // Animated Meshes
     delete g_pSpiritAnimMesh;
     
     // Shared Materials
-    delete g_pDefaultDiffuseMaterial;
-    delete g_pDefaultToonMaterial;
+    delete g_pDefaultMaterial;
 }

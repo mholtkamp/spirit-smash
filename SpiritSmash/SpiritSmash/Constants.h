@@ -3,4 +3,20 @@
 
 #define LIGHTING_INTERVALS 3
 
+#define SPIRIT_DEFAULT_SPEED 2.0f
+#define SPIRIT_JUMP_FRAME_WINDOW 5
+
+
+#define FIELD_TYPE_FOREST 0
+
+#define PLATFORM_SECTION_WIDTH 2.0f
+#define PLATFORM_HALF_EXTENT 1.0f
+
+#define KILL_LEFT 0 
+#define KILL_RIGHT 1
+#define KILL_TOP 2 
+#define KILL_BOTTOM 3
+
+#define MAX_PLAYERS 4
+
 #endif
