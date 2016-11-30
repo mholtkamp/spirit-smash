@@ -10,7 +10,7 @@ Texture* g_pPlatformMid2Tex                 = 0;
 // Static Mesh assets
 StaticMesh* g_pPlatformLeftMesh             = 0;
 StaticMesh* g_pPlatformMidMesh              = 0;
-StaticMesh* g_pPlatformLeftMesh             = 0;
+StaticMesh* g_pPlatformRightMesh             = 0;
 StaticMesh* g_pSkysphereMesh                = 0;
 
 // Animated Mesh assets
@@ -46,8 +46,8 @@ void LoadAssets()
         g_pPlatformMidMesh = new StaticMesh();
         g_pPlatformMidMesh->Load("Data/StaticMeshes/platform_mid.obj");
 
-        g_pPlatformLeftMesh = new StaticMesh();
-        g_pPlatformLeftMesh->Load("Data/StaticMeshes/platform_right.obj");
+        g_pPlatformRightMesh = new StaticMesh();
+        g_pPlatformRightMesh->Load("Data/StaticMeshes/platform_right.obj");
 
         g_pSkysphereMesh = new StaticMesh();
         g_pSkysphereMesh->Load("Data/StaticMeshes/skysphere.obj");

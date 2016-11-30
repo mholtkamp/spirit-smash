@@ -51,7 +51,7 @@
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>vakz.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -70,6 +70,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Assets.cpp" />
+    <ClCompile Include="CameraController.cpp" />
     <ClCompile Include="Field.cpp" />
     <ClCompile Include="ForestField.cpp" />
     <ClCompile Include="Game.cpp" />
@@ -79,12 +80,18 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Assets.h" />
+    <ClInclude Include="CameraController.h" />
     <ClInclude Include="Constants.h" />
     <ClInclude Include="Field.h" />
     <ClInclude Include="ForestField.h" />
     <ClInclude Include="Game.h" />
     <ClInclude Include="Platform.h" />
     <ClInclude Include="Spirit.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\vakz\project\Windows\Engine\Engine.vcxproj">
+      <Project>{e8e61552-1d55-4307-ab68-e6485a321210}</Project>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

@@ -5,6 +5,8 @@
 
 class ForestField : public Field
 {
+public:
+
     ForestField();
     ~ForestField();
 

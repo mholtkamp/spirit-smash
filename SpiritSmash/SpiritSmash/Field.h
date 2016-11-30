@@ -11,8 +11,6 @@ public:
     Field();
     virtual ~Field();
 
-    void SetGame(class Game* pGame);
-
     virtual void Generate();
 
     virtual void Update();

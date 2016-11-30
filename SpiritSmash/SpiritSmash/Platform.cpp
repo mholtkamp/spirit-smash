@@ -1,6 +1,7 @@
 #include "Platform.h"
 #include "Constants.h"
 #include "Assets.h"
+#include "Game.h"
 
 OrientedBoxCollider* Platform::s_pPlatformCollider = 0;
 
@@ -36,8 +37,7 @@ void Platform::Generate(int nSize,
         s_pPlatformCollider->SetHalfExtents(PLATFORM_HALF_EXTENT,
                                             PLATFORM_HALF_EXTENT, 
                                             PLATFORM_HALF_EXTENT);
-        s_pPlatformCollider->SetRelativePosition(0.0f, 0.0f, 0.0f);
-        s_pPlatformCollider->SetRelativePosition(0.0f, 0.0f, 0.0f);
+        s_pPlatformCollider->SetRelativePosition(PLATFORM_COLLISION_OFFSET, 0.0f, 0.0f);
     }
 
     // Generate each section in the platform. 
@@ -49,6 +49,10 @@ void Platform::Generate(int nSize,
                                   fZ);
         m_arMatter[i].SetMaterial(g_pDefaultMaterial);
         m_arMatter[i].AddCollider(s_pPlatformCollider);
+        m_arMatter[i].SetPhysical(1);
+        m_arMatter[i].SetMobile(0);
+        m_arMatter[i].SetSorted(1);
+        m_arMatter[i].EnableColliderRendering();
         
         // Set the appropriate mesh and texture
         if (i == 0)
@@ -66,7 +70,9 @@ void Platform::Generate(int nSize,
             m_arMatter[i].SetMesh(g_pPlatformMidMesh);
 
             // Alternate textures for mid platforms
-            m_arMatter[i].SetTexture( (i % 2) ? g_pPlatformMid1 : g_pPlatformMid2);
+            m_arMatter[i].SetTexture( (i % 2) ? g_pPlatformMid1Tex : g_pPlatformMid2Tex);
         }
+
+        Game::GetInstance()->GetScene()->AddActor(&m_arMatter[i]);
     }
 }

@@ -1,0 +1,41 @@
+animationcount 5
+framespersecond 60
+
+animation Idle
+keyframecount 5
+keyframe 0 spirit_idle_0.obj
+keyframe 15 spirit_idle_1.obj
+keyframe 30 spirit_idle_2.obj
+keyframe 45 spirit_idle_3.obj
+keyframe 60 spirit_idle_4.obj
+end 60
+
+animation Move
+keyframecount 5
+keyframe 0 spirit_move_0.obj
+keyframe 10 spirit_move_1.obj
+keyframe 20 spirit_move_2.obj
+keyframe 30 spirit_move_3.obj
+keyframe 40 spirit_move_4.obj
+end 40
+
+animation Charge
+keyframecount 3
+keyframe 0 spirit_charge_0.obj
+keyframe 30 spirit_charge_1.obj
+keyframe 60 spirit_charge_2.obj
+end 60
+
+animation Jump
+keyframecount 3
+keyframe 0 spirit_jump_0.obj
+keyframe 20 spirit_jump_1.obj
+keyframe 30 spirit_jump_2.obj
+end 30
+
+animation Fall
+keyframecount 3
+keyframe 0 spirit_fall_0.obj
+keyframe 30 spirit_fall_1.obj
+keyframe 60 spirit_fall_2.obj
+end 60
