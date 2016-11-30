@@ -30,6 +30,9 @@ private:
 
     static void CreateSharedCollider();
 
+    void Update_Kinematics();
+    void Update_Orientation();
+    void Update_Animation();
     void CheckJump();
     void CheckGrounded();
     void ApplyGravity();
@@ -58,6 +61,8 @@ private:
 
     float m_fXVelocity;
     float m_fYVelocity;
+
+    int m_nDirection;
 
     // Shared collider. Always same size for all spirits
     static OrientedBoxCollider* s_pSpiritCollider;

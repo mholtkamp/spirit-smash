@@ -102,6 +102,9 @@ void Game::Start(int nPlayers,
 
     m_pField->Generate();
 
+    // Disable any test rendering
+    Matter::SetGlobalColliderRenderingEnable(0);
+
     // Begin frame timer 
     m_timer.Start();
 }
@@ -141,10 +144,12 @@ void Game::Update()
         if (m_nDebugMode != 0)
         {
             m_pScene->EnableMatterOctreeRendering();
+            Matter::SetGlobalColliderRenderingEnable(1);
         }
         else
         {
             m_pScene->DisableMatterOctreeRendering();
+            Matter::SetGlobalColliderRenderingEnable(0);
         }
     }
 

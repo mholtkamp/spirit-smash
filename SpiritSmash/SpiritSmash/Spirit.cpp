@@ -47,6 +47,8 @@ Spirit::Spirit()
     m_fAcceleration = SPIRIT_DEFAULT_ACCELERATION;
     m_nJumpPressed = SPIRIT_JUMP_FRAME_WINDOW;
 
+    m_nDirection = DIRECTION_RIGHT;
+
     m_fXVelocity = 0.0f;
     m_fYVelocity = 0.0f;
 
@@ -59,6 +61,13 @@ Spirit::~Spirit()
 }
 
 void Spirit::Update()
+{
+    Update_Kinematics();
+    Update_Orientation();
+    Update_Animation();
+}
+
+void Spirit::Update_Kinematics()
 {
     float fAccelX = 0.0f;
     float fDeltaTime = Game::GetInstance()->DeltaTime();
@@ -79,8 +88,6 @@ void Spirit::Update()
     }
 
     CheckJump();
-
-    CheckGrounded();
 
     if (m_nGrounded == 0)
     {
@@ -108,13 +115,46 @@ void Spirit::Update()
 
     // Translate in X
     m_matter.Translate(fDeltaTime * m_fXVelocity, 0.0f, 0.0f);
-    m_matter.Translate(0.0f, fDeltaTime * m_fYVelocity, 0.0f);
+
+    // Translate in Y if not grounded.
+    if (m_nGrounded == 0)
+    {
+        int nHit = 0;
+        nHit = m_matter.Translate(0.0f, fDeltaTime * m_fYVelocity, 0.0f);
+
+        if (nHit != 0)
+        {
+            m_fYVelocity = 0.0f;
+        }
+    }
 
     // Sync position with 
     const float* arPos = m_matter.GetPosition();
     m_arPosition[0] = arPos[0];
     m_arPosition[1] = arPos[1];
     m_arPosition[2] = arPos[2];
+
+    CheckGrounded();
+}
+
+void Spirit::Update_Orientation()
+{
+    // First, just determined the direction
+    if (IsKeyDown(VKEY_A))
+    {
+        m_nDirection = DIRECTION_LEFT;
+        m_matter.SetRotation(0.0f, -90.0f, 0.0f);
+    }
+    else if (IsKeyDown(VKEY_D))
+    {
+        m_nDirection = DIRECTION_RIGHT;
+        m_matter.SetRotation(0.0f, 90.0f, 0.0f);
+    }
+}
+
+void Spirit::Update_Animation()
+{
+
 }
 
 int Spirit::GetPercent()
@@ -180,12 +220,35 @@ void Spirit::CreateSharedCollider()
 
 void Spirit::CheckJump()
 {
+    if (m_nGrounded != 0 &&
+        m_nJumpPressed < SPIRIT_JUMP_FRAME_WINDOW)
+    {
+        m_nGrounded = 0;
+        m_fYVelocity = SPIRIT_JUMP_VELOCITY;
+    }
 
+    m_nJumpPressed++;
 }
 
 void Spirit::CheckGrounded()
 {
+    int nHit = 0;
 
+    nHit = m_matter.Translate(0.0f, -SPIRIT_GROUNDING_SWEEP_DISTANCE, 0.0f);
+
+    if (nHit != 0)
+    {
+        m_nGrounded = 1;
+    }
+    else
+    {
+        m_nGrounded = 0;
+    }
+    
+    // Revert to original position
+    m_matter.SetPosition(m_arPosition[0],
+                         m_arPosition[1],
+                         m_arPosition[2]);
 }
 
 void Spirit::ApplyGravity()
