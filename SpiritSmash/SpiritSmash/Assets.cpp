@@ -6,6 +6,7 @@ Texture* g_pSpiritTex                       = 0;
 Texture* g_pPlatformEndTex                  = 0;
 Texture* g_pPlatformMid1Tex                 = 0;
 Texture* g_pPlatformMid2Tex                 = 0;
+Texture* g_pSkysphereTex = 0;
 
 // Static Mesh assets
 StaticMesh* g_pPlatformLeftMesh             = 0;
@@ -17,7 +18,10 @@ StaticMesh* g_pSkysphereMesh                = 0;
 AnimatedMesh* g_pSpiritAnimMesh             = 0;
 
 // Shared Materials
-ToonMaterial*    g_pDefaultMaterial         = 0;
+Material*           g_pDefaultMaterial = 0;
+DiffuseMaterial*    g_pDefaultDiffuseMaterial = 0;
+ToonMaterial*       g_pDefaultToonMaterial = 0;
+FullbrightMaterial* g_pDefaultFullbrightMaterial = 0;
 
 // Assets loaded flag
 static int s_nLoaded = 0;
@@ -28,7 +32,7 @@ void LoadAssets()
     {
         // Textures 
         g_pSpiritTex = new Texture();
-        g_pSpiritTex->LoadBMP("Data/Textures/spirit_tex.bmp");
+        g_pSpiritTex->LoadBMP("Data/Textures/spirit1_tex.bmp");
 
         g_pPlatformEndTex = new Texture();
         g_pPlatformEndTex->LoadBMP("Data/Textures/platform_end_tex.bmp");
@@ -38,6 +42,9 @@ void LoadAssets()
 
         g_pPlatformMid2Tex = new Texture();
         g_pPlatformMid2Tex->LoadBMP("Data/Textures/platform_mid_2_tex.bmp");
+
+        g_pSkysphereTex = new Texture();
+        g_pSkysphereTex->LoadBMP("Data/Textures/skysphere_tex.bmp");
 
         // Static Meshes
         g_pPlatformLeftMesh = new StaticMesh();
@@ -57,9 +64,17 @@ void LoadAssets()
         g_pSpiritAnimMesh->Load("Data/AnimatedMeshes/AM_Spirit/spirit.amf");
 
         // Shared Materials
-        g_pDefaultMaterial = new ToonMaterial();
-        g_pDefaultMaterial->SetColor(1.0f, 1.0f, 1.0f, 1.0f);
-        g_pDefaultMaterial->SetLightingIntervalCount(LIGHTING_INTERVALS);
+        g_pDefaultDiffuseMaterial = new DiffuseMaterial();
+        g_pDefaultDiffuseMaterial->SetColor(1.0f, 1.0f, 1.0f, 1.0f);
+
+        g_pDefaultToonMaterial = new ToonMaterial();
+        g_pDefaultToonMaterial->SetColor(1.0f, 1.0f, 1.0f, 1.0f);
+        g_pDefaultToonMaterial->SetLightingIntervalCount(LIGHTING_INTERVALS);
+        
+        g_pDefaultFullbrightMaterial = new FullbrightMaterial();
+        g_pDefaultFullbrightMaterial->SetColor(1.0f, 1.0f, 1.0f, 1.0f);
+
+        g_pDefaultMaterial = g_pDefaultDiffuseMaterial;
 
         s_nLoaded = 1;
     }

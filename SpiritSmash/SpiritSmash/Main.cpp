@@ -16,7 +16,7 @@
 
 int main()
 {
-	//SetFullScreen(1);
+	SetFullScreen(1);
 	Initialize();
 
     // Load all game assets 

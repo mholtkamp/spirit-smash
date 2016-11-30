@@ -2,6 +2,7 @@
 #define FOREST_FIELD_H
 
 #include "Field.h"
+#include "DirectionalLight.h"
 
 class ForestField : public Field
 {
@@ -15,6 +16,10 @@ public:
 
     void Generate();
 
+private:
+
+    DirectionalLight* m_pSun;
+    Matter m_skysphere;
 };
 
 

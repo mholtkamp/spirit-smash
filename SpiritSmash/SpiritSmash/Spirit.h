@@ -8,6 +8,16 @@ class Spirit
 {
 public:
 
+    enum AnimState
+    {
+        ANIM_INVALID    = -1,
+        ANIM_IDLE       = 0,
+        ANIM_MOVE       = 1,
+        ANIM_FALL       = 3,
+        ANIM_CHARGE     = 4,
+        NUM_ANIM_STATES = 5
+    };
+
 	Spirit();
 	~Spirit();
 
@@ -37,6 +47,7 @@ private:
     void CheckGrounded();
     void ApplyGravity();
     void ApplyDrag();
+    void AssignProperTexture();
 
     // Reference to the game
     class Game* m_pGame;
@@ -56,6 +67,7 @@ private:
 
     // Frames since jump has been pressed.
     int m_nJumpPressed;
+    int m_nJustJumped;
 
     int m_nAlive;
 
@@ -63,6 +75,8 @@ private:
     float m_fYVelocity;
 
     int m_nDirection;
+
+    int m_nAnimState;
 
     // Shared collider. Always same size for all spirits
     static OrientedBoxCollider* s_pSpiritCollider;

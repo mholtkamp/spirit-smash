@@ -4,6 +4,7 @@
 #include "ForestField.h"
 #include "Timer.h"
 #include "VInput.h"
+#include "Assets.h"
 #include <assert.h>
 #include "Vakz.h"
 
@@ -44,7 +45,10 @@ Game::Game()
 
     m_pScene = new Scene();
     SetScene(m_pScene);
-    m_pScene->SetAmbientLight(1.0f, 1.0f, 1.0f, 1.0f);
+    m_pScene->SetAmbientLight(LIGHTING_AMBIENT_INTENSITY, 
+                              LIGHTING_AMBIENT_INTENSITY, 
+                              LIGHTING_AMBIENT_INTENSITY, 
+                              LIGHTING_AMBIENT_INTENSITY);
 
     // Create camera
     m_pCamera = new Camera();

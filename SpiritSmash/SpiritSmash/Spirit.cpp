@@ -46,11 +46,16 @@ Spirit::Spirit()
     m_fSpeed = SPIRIT_DEFAULT_SPEED;
     m_fAcceleration = SPIRIT_DEFAULT_ACCELERATION;
     m_nJumpPressed = SPIRIT_JUMP_FRAME_WINDOW;
+    m_nJustJumped = 0;
 
     m_nDirection = DIRECTION_RIGHT;
 
     m_fXVelocity = 0.0f;
     m_fYVelocity = 0.0f;
+
+    m_nAnimState = ANIM_IDLE;
+
+    
 
     m_nAlive = 0;
 }
@@ -71,6 +76,9 @@ void Spirit::Update_Kinematics()
 {
     float fAccelX = 0.0f;
     float fDeltaTime = Game::GetInstance()->DeltaTime();
+
+    // Reset the just jumped flag;
+    m_nJustJumped = 0;
 
     // Get relevant input.
     if (IsKeyDown(VKEY_A))
@@ -154,7 +162,74 @@ void Spirit::Update_Orientation()
 
 void Spirit::Update_Animation()
 {
+    switch (m_nAnimState)
+    {
+    case ANIM_IDLE:
 
+        if (m_nJustJumped != 0)
+        {
+            m_nAnimState = ANIM_FALL;
+            m_matter.SetAnimation("Fall");
+            m_matter.PlayAnimationOnce("Jump");
+        }
+        else if (m_nGrounded == 0)
+        {
+            m_nAnimState = ANIM_FALL;
+            m_matter.SetAnimation("Fall");
+        }
+        else if (IsKeyDown(VKEY_A) != 0 ||
+                 IsKeyDown(VKEY_D) != 0)
+        {
+            m_nAnimState = ANIM_MOVE;
+            m_matter.SetAnimation("Move");
+        }
+        break;
+
+    case ANIM_MOVE:
+
+        if (m_nJustJumped != 0)
+        {
+            m_nAnimState = ANIM_FALL;
+            m_matter.SetAnimation("Fall");
+            m_matter.PlayAnimationOnce("Jump");
+        }
+        else if (m_nGrounded == 0)
+        {
+            m_nAnimState = ANIM_FALL;
+            m_matter.SetAnimation("Fall");
+        }
+        else if (IsKeyDown(VKEY_A) == 0 &&
+                 IsKeyDown(VKEY_D) == 0)
+        {
+            m_nAnimState = ANIM_IDLE;
+            m_matter.SetAnimation("Idle");
+        }
+        break;
+
+    case ANIM_FALL:
+        if (m_nGrounded != 0)
+        {
+            if (IsKeyDown(VKEY_A) != 0 ||
+                IsKeyDown(VKEY_D) != 0)
+            {
+                m_nAnimState = ANIM_MOVE;
+                m_matter.SetAnimation("Move");
+            }
+            else
+            {
+                m_nAnimState = ANIM_IDLE;
+                m_matter.SetAnimation("Idle");
+            }
+        }
+        break;
+
+    case ANIM_CHARGE:
+
+        break;
+
+    default:
+        break;
+    }
 }
 
 int Spirit::GetPercent()
@@ -176,6 +251,8 @@ int Spirit::GetPlayerIndex()
 void Spirit::SetPlayerIndex(int nIndex)
 {
     m_nPlayerIndex = nIndex;
+
+    AssignProperTexture();
 }
 
 void Spirit::SetLives(int nLives)
@@ -225,6 +302,7 @@ void Spirit::CheckJump()
     {
         m_nGrounded = 0;
         m_fYVelocity = SPIRIT_JUMP_VELOCITY;
+        m_nJustJumped = 1;
     }
 
     m_nJumpPressed++;
@@ -275,5 +353,24 @@ void Spirit::ApplyDrag()
         {
             m_fXVelocity = 0.0f;
         }
+    }
+}
+
+void Spirit::AssignProperTexture()
+{
+    switch (m_nPlayerIndex)
+    {
+    case 0:
+        m_matter.SetTexture(g_pSpiritTex);
+        break;
+    case 1:
+        m_matter.SetTexture(g_pSpiritTex);
+        break;
+    case 2:
+        m_matter.SetTexture(g_pSpiritTex);
+        break;
+    case 3:
+        m_matter.SetTexture(g_pSpiritTex);
+        break;
     }
 }

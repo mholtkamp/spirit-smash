@@ -1,6 +1,7 @@
 #include "ForestField.h"
 #include "Constants.h"
 #include "Game.h"
+#include "Assets.h"
 
 ForestField::ForestField()
 {
@@ -31,6 +32,19 @@ ForestField::ForestField()
     m_arKillExtents[KILL_RIGHT]  = 30.0f;
     m_arKillExtents[KILL_TOP]    = 25.0f;
     m_arKillExtents[KILL_BOTTOM] = -5.0f;
+
+    m_pSun = new DirectionalLight();
+    m_pSun->SetColor(0.8f, 1.0f, 1.0f);
+    m_pSun->SetDirectionVector(1.0f, -2.0f, -2.0f);
+    m_pSun->SetIntensity(1.0f);
+    Game::GetInstance()->GetScene()->AddActor(m_pSun);
+
+    m_skysphere.SetMesh(g_pSkysphereMesh);
+    m_skysphere.SetMaterial(g_pDefaultFullbrightMaterial);
+    m_skysphere.SetTexture(g_pSkysphereTex);
+    m_skysphere.SetPosition(15.0f, 0.0f, 0.0f);
+    m_skysphere.SetScale(5.0f, 5.0f, 5.0f);
+    Game::GetInstance()->GetScene()->AddActor(&m_skysphere);
 }
 
 ForestField::~ForestField()
@@ -39,6 +53,12 @@ ForestField::~ForestField()
     {
         delete [] m_arPlatforms;
         m_arPlatforms = 0;
+    }
+
+    if (m_pSun != 0)
+    {
+        delete m_pSun;
+        m_pSun = 0;
     }
 }
 
@@ -91,10 +111,4 @@ void ForestField::Generate()
     m_arPlatforms[9].Generate(2,  20.0f, 16.0f, BACKGROUND_Z);
     m_arPlatforms[10].Generate(2, 22.0f, 9.0f,  BACKGROUND_Z);
     m_arPlatforms[11].Generate(2, 3.0f,  7.0f,  BACKGROUND_Z);
-
-    //m_arPlatforms[0].Generate(7, 0.0f, 0.0f, 0.0f);
-    //m_arPlatforms[1].Generate(3, -2.0f, 5.0f, 0.0f);
-    //m_arPlatforms[2].Generate(3, 5.0f, 5.0f, 0.0f);
-    //m_arPlatforms[3].Generate(3, 12.0f, 5.0f, 0.0f);
-    //m_arPlatforms[4].Generate(3, 5.0f, 8.0f, 0.0f);
 }
