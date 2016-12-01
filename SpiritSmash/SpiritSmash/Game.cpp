@@ -89,22 +89,22 @@ void Game::Start(int nPlayers,
 
     m_nNumPlayers = nPlayers;
 
+    switch (nField)
+    {
+    case FIELD_TYPE_FOREST:
+        m_pField = new ForestField();
+        break;
+    default:
+        break;
+    }
+
+    m_pField->Generate();
+
     for (i = 0; i < nPlayers; i++)
     {
         m_arSpirit[i] = new Spirit();
         m_arSpirit[i]->SetPlayerIndex(i);
     }
-
-    switch (nField)
-    {
-        case FIELD_TYPE_FOREST:
-            m_pField = new ForestField();
-            break;
-        default:
-            break;
-    }
-
-    m_pField->Generate();
 
     // Disable any test rendering
     Matter::SetGlobalColliderRenderingEnable(0);

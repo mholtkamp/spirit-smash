@@ -1,6 +1,8 @@
 #ifndef SPIRIT_H
 #define SPIRIT_H
 
+#include "AttackVolume.h"
+
 #include "Matter.h"
 #include "OrientedBoxCollider.h"
 
@@ -37,6 +39,8 @@ public:
     int IsAlive();
     int HasControl();
     void Kill();
+
+    Matter* GetMatter();
 
 private:
 
@@ -85,8 +89,12 @@ private:
 
     float m_fAttackTime;
 
+    AttackVolume m_attackVolume;
+
     // Shared collider. Always same size for all spirits
     static OrientedBoxCollider* s_pSpiritCollider;
+
+
 
 };
 

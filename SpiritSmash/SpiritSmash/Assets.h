@@ -24,6 +24,7 @@ extern StaticMesh* g_pPlatformLeftMesh;
 extern StaticMesh* g_pPlatformMidMesh;
 extern StaticMesh* g_pPlatformRightMesh;
 extern StaticMesh* g_pSkysphereMesh;
+extern StaticMesh* g_pAttackDebugMesh;
 
 // Animated Mesh assets
 extern AnimatedMesh* g_pSpiritAnimMesh;

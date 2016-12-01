@@ -16,6 +16,7 @@ StaticMesh* g_pPlatformLeftMesh             = 0;
 StaticMesh* g_pPlatformMidMesh              = 0;
 StaticMesh* g_pPlatformRightMesh             = 0;
 StaticMesh* g_pSkysphereMesh                = 0;
+StaticMesh* g_pAttackDebugMesh              = 0;
 
 // Animated Mesh assets
 AnimatedMesh* g_pSpiritAnimMesh             = 0;
@@ -71,6 +72,9 @@ void LoadAssets()
         g_pSkysphereMesh = new StaticMesh();
         g_pSkysphereMesh->Load("Data/StaticMeshes/skysphere.obj");
 
+        g_pAttackDebugMesh = new StaticMesh();
+        g_pAttackDebugMesh->Load("Data/StaticMeshes/attack_debug.obj");
+
         // Animated Meshes
         g_pSpiritAnimMesh = new AnimatedMesh();
         g_pSpiritAnimMesh->Load("Data/AnimatedMeshes/AM_Spirit/spirit.amf");
@@ -108,6 +112,7 @@ void DestroyAssets()
     delete g_pPlatformMidMesh;
     delete g_pPlatformRightMesh;
     delete g_pSkysphereMesh;
+    delete g_pAttackDebugMesh;
 
     // Animated Meshes
     delete g_pSpiritAnimMesh;

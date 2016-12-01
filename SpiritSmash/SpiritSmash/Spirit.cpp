@@ -150,16 +150,20 @@ void Spirit::Update_Kinematics()
 
 void Spirit::Update_Orientation()
 {
-    // First, just determined the direction
-    if (GetControllerAxisValue(VCONT_AXIS_LTHUMB_X, m_nPlayerIndex) < -DEAD_ZONE)
+    // Only update the orientation if not attacking.
+    if (m_nAttacking == 0)
     {
-        m_nDirection = DIRECTION_LEFT;
-        m_matter.SetRotation(0.0f, -90.0f, 0.0f);
-    }
-    else if (GetControllerAxisValue(VCONT_AXIS_LTHUMB_X, m_nPlayerIndex) > DEAD_ZONE)
-    {
-        m_nDirection = DIRECTION_RIGHT;
-        m_matter.SetRotation(0.0f, 90.0f, 0.0f);
+        // First, just determined the direction
+        if (GetControllerAxisValue(VCONT_AXIS_LTHUMB_X, m_nPlayerIndex) < -DEAD_ZONE)
+        {
+            m_nDirection = DIRECTION_LEFT;
+            m_matter.SetRotation(0.0f, -90.0f, 0.0f);
+        }
+        else if (GetControllerAxisValue(VCONT_AXIS_LTHUMB_X, m_nPlayerIndex) > DEAD_ZONE)
+        {
+            m_nDirection = DIRECTION_RIGHT;
+            m_matter.SetRotation(0.0f, 90.0f, 0.0f);
+        }
     }
 }
 
@@ -179,6 +183,17 @@ void Spirit::Update_Attack()
     else
     {
         m_fAttackTime += Game::GetInstance()->DeltaTime();
+
+        m_attackVolume.SetElapsedTime(m_fAttackTime);
+
+        // Set the attack volume's position based on this spirit's position.
+        float arPos[3] = { m_arPosition[0], 
+                           m_arPosition[1],
+                           m_arPosition[2]};
+
+        arPos[0] += (m_nDirection == DIRECTION_LEFT) ? -ATTACK_VOLUME_X_OFFSET : ATTACK_VOLUME_X_OFFSET;
+
+        m_attackVolume.SetPosition(arPos[0], arPos[1], arPos[2]);
 
         if (m_fAttackTime > SPIRIT_ATTACK_TIME)
         {
@@ -443,4 +458,9 @@ void Spirit::AssignProperTexture()
 int Spirit::HasControl()
 {
     return 1;
+}
+
+Matter* Spirit::GetMatter()
+{
+    return &m_matter;
 }

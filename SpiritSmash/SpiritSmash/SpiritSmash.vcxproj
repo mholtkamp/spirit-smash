@@ -70,6 +70,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Assets.cpp" />
+    <ClCompile Include="AttackVolume.cpp" />
     <ClCompile Include="CameraController.cpp" />
     <ClCompile Include="Field.cpp" />
     <ClCompile Include="ForestField.cpp" />
@@ -80,6 +81,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Assets.h" />
+    <ClInclude Include="AttackVolume.h" />
     <ClInclude Include="CameraController.h" />
     <ClInclude Include="Constants.h" />
     <ClInclude Include="Field.h" />
