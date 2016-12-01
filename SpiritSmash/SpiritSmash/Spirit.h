@@ -88,6 +88,7 @@ private:
 
     int m_nAlive;
     int m_nAttacking;
+    int m_nJumpCharges;
 
     float m_fXVelocity;
     float m_fYVelocity;

@@ -39,6 +39,7 @@ Spirit::Spirit()
     m_nPercent     = 0;
     m_nLives       = 1;
     m_nDamage      = SPIRIT_DEFAULT_DAMAGE;
+    m_nJumpCharges = 0;
 
     m_arPosition[0] = 15.0f;
     m_arPosition[1] = 12.0f;
@@ -94,7 +95,7 @@ void Spirit::Update_Kinematics()
         fAccelX = m_fAcceleration;
     }
 
-    if (IsControllerButtonDown(VCONT_A, m_nPlayerIndex))
+    if (IsControllerButtonJustDown(VCONT_A, m_nPlayerIndex))
     {
         m_nJumpPressed = 0;
     }
@@ -144,6 +145,11 @@ void Spirit::Update_Kinematics()
 
         if (nHit != 0)
         {
+            if (m_fYVelocity < 0.0f)
+            {
+                m_nJumpCharges = 1;
+            }
+
             m_fYVelocity = 0.0f;
         }
     }
@@ -189,7 +195,8 @@ void Spirit::Update_Attack()
             m_fAttackTime = 0.0f;
         }
     }
-    else
+    
+    if (m_nAttacking != 0)
     {
         m_fAttackTime += Game::GetInstance()->DeltaTime();
 
@@ -395,7 +402,14 @@ void Spirit::CheckJump()
         m_fYVelocity = SPIRIT_JUMP_VELOCITY;
         m_nJustJumped = 1;
     }
-
+    else if (m_nGrounded == 0 &&
+             m_nJumpPressed == 0 &&
+             m_nJumpCharges > 0)
+    {
+        m_nJumpCharges--;
+        m_fYVelocity = SPIRIT_JUMP_VELOCITY;
+        m_nJustJumped = 1;
+    }
     m_nJumpPressed++;
 }
 
