@@ -36,11 +36,19 @@ public:
 
     float* GetPosition();
 
+    void ApplyHit(float* arInstigatorPos,
+                  int nDamage);
+
     int IsAlive();
+    int IsAttacking();
+    int GetDamage();
+
     int HasControl();
     void Kill();
 
     Matter* GetMatter();
+
+    AttackVolume* GetAttackVolume();
 
 private:
 
@@ -67,6 +75,7 @@ private:
     int m_nPlayerIndex;
     int m_nPercent;
     int m_nLives;
+    int m_nDamage;
 
     int m_nGrounded;
 

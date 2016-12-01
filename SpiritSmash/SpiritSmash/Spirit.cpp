@@ -38,6 +38,7 @@ Spirit::Spirit()
     m_nPlayerIndex = 0;
     m_nPercent     = 0;
     m_nLives       = 1;
+    m_nDamage      = SPIRIT_DEFAULT_DAMAGE;
 
     m_arPosition[0] = 15.0f;
     m_arPosition[1] = 12.0f;
@@ -125,12 +126,20 @@ void Spirit::Update_Kinematics()
     }
 
     // Translate in X
-    m_matter.Translate(fDeltaTime * m_fXVelocity, 0.0f, 0.0f);
+    int nHit = 0;
+    nHit = m_matter.Translate(fDeltaTime * m_fXVelocity, 0.0f, 0.0f);
+
+    // Bounce the player if going faster than allowed speed.
+    if (nHit != 0 &&
+        m_fXVelocity > m_fSpeed)
+    {
+        m_fXVelocity = -m_fXVelocity;
+    }
 
     // Translate in Y if not grounded.
     if (m_nGrounded == 0)
     {
-        int nHit = 0;
+        nHit = 0;
         nHit = m_matter.Translate(0.0f, fDeltaTime * m_fYVelocity, 0.0f);
 
         if (nHit != 0)
@@ -194,6 +203,8 @@ void Spirit::Update_Attack()
         arPos[0] += (m_nDirection == DIRECTION_LEFT) ? -ATTACK_VOLUME_X_OFFSET : ATTACK_VOLUME_X_OFFSET;
 
         m_attackVolume.SetPosition(arPos[0], arPos[1], arPos[2]);
+
+        // The attack will be resolved in the AttackResolver::Update() method
 
         if (m_fAttackTime > SPIRIT_ATTACK_TIME)
         {
@@ -463,4 +474,47 @@ int Spirit::HasControl()
 Matter* Spirit::GetMatter()
 {
     return &m_matter;
+}
+
+AttackVolume* Spirit::GetAttackVolume()
+{
+    return &m_attackVolume;
+}
+
+int Spirit::IsAttacking()
+{
+    return m_nAttacking;
+}
+
+int Spirit::GetDamage()
+{
+    return m_nDamage;
+}
+
+void Spirit::ApplyHit(float* arInstigatorPos,
+    int nDamage)
+{
+    m_nPercent += nDamage;
+
+    float arDir[3] = { 0.0f, 0.0f, 0.0f };
+
+    // Calculate the vector pointing from instigator position 
+    // to this spirit's position
+    arDir[0] = m_arPosition[0] - arInstigatorPos[0];
+    arDir[1] = m_arPosition[1] - arInstigatorPos[1];
+    arDir[2] = 0.0f;
+
+    // Normalize this direction.
+    float fMag = sqrt(arDir[0] * arDir[0] + arDir[1] * arDir[1]);
+
+    if (fMag != 0.0f)
+    {
+        arDir[0] /= fMag;
+        arDir[1] /= fMag;
+    }
+
+    float fKnockbackSpeed = SPIRIT_BASE_KNOCKBACK_SPEED + m_nPercent * SPIRIT_PERCENT_KNOCKBACK_MULTIPLIER;
+
+    m_fXVelocity = fKnockbackSpeed * arDir[0];
+    m_fYVelocity = fKnockbackSpeed * arDir[1];
 }

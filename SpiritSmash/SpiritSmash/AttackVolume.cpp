@@ -81,3 +81,8 @@ void AttackVolume::SetPosition(float fX,
 {
     m_matter.SetPosition(fX, fY, fZ);
 }
+
+Matter* AttackVolume::GetMatter()
+{
+    return &m_matter;
+}

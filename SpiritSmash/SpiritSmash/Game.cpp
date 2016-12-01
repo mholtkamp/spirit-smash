@@ -168,6 +168,9 @@ void Game::Update()
 
         m_cameraController.Update();
     }
+
+    // After all players have moved, resolve their attacks
+    ResolveAttacks();
 }
 
 Spirit* Game::GetSpirit(int nPlayerIndex)
@@ -196,4 +199,60 @@ float Game::DeltaTime()
 int Game::InDebugMode()
 {
     return m_nDebugMode;
+}
+
+void Game::ResolveAttacks()
+{
+    Spirit* pAttacker = 0;
+    Spirit* pTarget = 0;
+
+    // For each spirit, check if it is attacking.
+    for (int i = 0; i < MAX_PLAYERS; i++)
+    {
+        if (m_arSpirit[i] != 0 &&
+            m_arSpirit[i]->IsAttacking())
+        {
+            // This spirit is attacking, so find all spirits that 
+            // overlap its attack volume.
+            pAttacker = m_arSpirit[i];
+
+            for (int j = 0; j < MAX_PLAYERS; j++)
+            {
+                pTarget = m_arSpirit[j];
+
+                if (pTarget != 0 &&
+                    pTarget != pAttacker &&
+                    pAttacker->GetAttackVolume()->GetMatter()->Overlaps(pTarget->GetMatter()))
+                {
+                    // The attacking spirit has hit another spirit.
+                    if (pTarget->IsAttacking() &&
+                        pTarget->GetAttackVolume()->GetMatter()->Overlaps(pAttacker->GetMatter()))
+                    {
+                        // The target spirit also hit the attacking spirit, so determine who will 
+                        // get hit based on priority.
+                        if (pTarget->GetAttackVolume()->GetPriority() <= pAttacker->GetAttackVolume()->GetPriority())
+                        {
+                            // The target had lower attack priority. Hit the player
+                            pTarget->ApplyHit(pAttacker->GetPosition(),
+                                              pAttacker->GetDamage());
+                        }
+                        else
+                        {
+                            // The target had higher priority... so really the target is the attacker.
+                            // How the tables have turned... The attacker will handle the hit application
+                        }
+                    }
+                    else
+                    {
+                        // The target isn't attacking or its attack isn't hitting the attacker.
+                        // So apply a hit to the target.
+                        pTarget->ApplyHit(pAttacker->GetPosition(),
+                                          pAttacker->GetDamage());
+                    }
+                }
+            }
+        }
+    }
+
+
 }

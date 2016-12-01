@@ -20,6 +20,9 @@ public:
     void SetPosition(float fX,
                      float fY,
                      float fZ);
+
+    Matter* GetMatter();
+
 private:
 
     static void CreateSharedCollider();

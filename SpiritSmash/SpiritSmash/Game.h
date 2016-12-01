@@ -29,6 +29,8 @@ public:
 
     void Update();
 
+    void ResolveAttacks();
+
     Spirit* GetSpirit(int nPlayerIndex);
 
     Field* GetField();
