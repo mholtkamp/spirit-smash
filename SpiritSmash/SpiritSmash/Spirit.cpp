@@ -5,6 +5,7 @@
 #include "Constants.h"
 
 #include <math.h>
+#include <assert.h>
 
 OrientedBoxCollider* Spirit::s_pSpiritCollider = 0;
 
@@ -81,16 +82,16 @@ void Spirit::Update_Kinematics()
     m_nJustJumped = 0;
 
     // Get relevant input.
-    if (IsKeyDown(VKEY_A))
+    if (GetControllerAxisValue(VCONT_AXIS_LTHUMB_X, m_nPlayerIndex) < -DEAD_ZONE)
     {
         fAccelX = -m_fAcceleration;
     }
-    else if (IsKeyDown(VKEY_D))
+    else if (GetControllerAxisValue(VCONT_AXIS_LTHUMB_X, m_nPlayerIndex) > DEAD_ZONE)
     {
         fAccelX = m_fAcceleration;
     }
 
-    if (IsKeyDown(VKEY_SPACE))
+    if (IsControllerButtonDown(VCONT_A, m_nPlayerIndex))
     {
         m_nJumpPressed = 0;
     }
@@ -148,12 +149,12 @@ void Spirit::Update_Kinematics()
 void Spirit::Update_Orientation()
 {
     // First, just determined the direction
-    if (IsKeyDown(VKEY_A))
+    if (GetControllerAxisValue(VCONT_AXIS_LTHUMB_X, m_nPlayerIndex) < -DEAD_ZONE)
     {
         m_nDirection = DIRECTION_LEFT;
         m_matter.SetRotation(0.0f, -90.0f, 0.0f);
     }
-    else if (IsKeyDown(VKEY_D))
+    else if (GetControllerAxisValue(VCONT_AXIS_LTHUMB_X, m_nPlayerIndex) > DEAD_ZONE)
     {
         m_nDirection = DIRECTION_RIGHT;
         m_matter.SetRotation(0.0f, 90.0f, 0.0f);
@@ -177,8 +178,7 @@ void Spirit::Update_Animation()
             m_nAnimState = ANIM_FALL;
             m_matter.SetAnimation("Fall");
         }
-        else if (IsKeyDown(VKEY_A) != 0 ||
-                 IsKeyDown(VKEY_D) != 0)
+        else if (abs(GetControllerAxisValue(VCONT_AXIS_LTHUMB_X, m_nPlayerIndex)) > DEAD_ZONE)
         {
             m_nAnimState = ANIM_MOVE;
             m_matter.SetAnimation("Move");
@@ -198,8 +198,7 @@ void Spirit::Update_Animation()
             m_nAnimState = ANIM_FALL;
             m_matter.SetAnimation("Fall");
         }
-        else if (IsKeyDown(VKEY_A) == 0 &&
-                 IsKeyDown(VKEY_D) == 0)
+        else if (abs(GetControllerAxisValue(VCONT_AXIS_LTHUMB_X, m_nPlayerIndex)) <= DEAD_ZONE)
         {
             m_nAnimState = ANIM_IDLE;
             m_matter.SetAnimation("Idle");
@@ -209,8 +208,7 @@ void Spirit::Update_Animation()
     case ANIM_FALL:
         if (m_nGrounded != 0)
         {
-            if (IsKeyDown(VKEY_A) != 0 ||
-                IsKeyDown(VKEY_D) != 0)
+            if (abs(GetControllerAxisValue(VCONT_AXIS_LTHUMB_X, m_nPlayerIndex)) < DEAD_ZONE)
             {
                 m_nAnimState = ANIM_MOVE;
                 m_matter.SetAnimation("Move");
@@ -250,6 +248,9 @@ int Spirit::GetPlayerIndex()
 
 void Spirit::SetPlayerIndex(int nIndex)
 {
+    assert(nIndex >= 0);
+    assert(nIndex < MAX_PLAYERS);
+
     m_nPlayerIndex = nIndex;
 
     AssignProperTexture();

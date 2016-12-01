@@ -43,4 +43,6 @@
 
 #define CAMERA_Z_OFFSET 15.0f
 
+#define DEAD_ZONE 0.2f
+
 #endif
