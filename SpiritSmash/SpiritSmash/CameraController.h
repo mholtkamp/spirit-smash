@@ -21,6 +21,10 @@ public:
 
 private:
 
+    void FindCenterPosition(float* arSum);
+
+    float CalculateCameraZ(float* arCenter);
+
     int m_nDebugMode;
 
     Camera* m_pCamera;

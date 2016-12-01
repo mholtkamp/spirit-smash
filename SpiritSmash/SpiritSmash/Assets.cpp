@@ -2,7 +2,10 @@
 #include "Constants.h"
 
 // Texture assets
-Texture* g_pSpiritTex                       = 0;
+Texture* g_pSpirit1Tex                      = 0;
+Texture* g_pSpirit2Tex                      = 0;
+Texture* g_pSpirit3Tex                      = 0;
+Texture* g_pSpirit4Tex                      = 0;
 Texture* g_pPlatformEndTex                  = 0;
 Texture* g_pPlatformMid1Tex                 = 0;
 Texture* g_pPlatformMid2Tex                 = 0;
@@ -31,8 +34,17 @@ void LoadAssets()
     if (s_nLoaded == 0)
     {
         // Textures 
-        g_pSpiritTex = new Texture();
-        g_pSpiritTex->LoadBMP("Data/Textures/spirit1_tex.bmp");
+        g_pSpirit1Tex = new Texture();
+        g_pSpirit1Tex->LoadBMP("Data/Textures/spirit1_tex.bmp");
+
+        g_pSpirit2Tex = new Texture();
+        g_pSpirit2Tex->LoadBMP("Data/Textures/spirit2_tex.bmp");
+
+        g_pSpirit3Tex = new Texture();
+        g_pSpirit3Tex->LoadBMP("Data/Textures/spirit3_tex.bmp");
+
+        g_pSpirit4Tex = new Texture();
+        g_pSpirit4Tex->LoadBMP("Data/Textures/spirit4_tex.bmp");
 
         g_pPlatformEndTex = new Texture();
         g_pPlatformEndTex->LoadBMP("Data/Textures/platform_end_tex.bmp");
@@ -83,7 +95,10 @@ void LoadAssets()
 void DestroyAssets()
 {
     // Textures 
-    delete g_pSpiritTex;
+    delete g_pSpirit1Tex;
+    delete g_pSpirit2Tex;
+    delete g_pSpirit3Tex;
+    delete g_pSpirit4Tex;
     delete g_pPlatformEndTex;
     delete g_pPlatformMid1Tex;
     delete g_pPlatformMid2Tex;

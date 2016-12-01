@@ -16,7 +16,7 @@
 
 int main()
 {
-	SetFullScreen(1);
+	//SetFullScreen(1);
 	Initialize();
 
     // Load all game assets 
@@ -25,7 +25,7 @@ int main()
     Game* pGame = Game::CreateInstance();
 
     // Start a game with 1 player on the forest field
-    pGame->Start(1, FIELD_TYPE_FOREST);
+    pGame->Start(2, FIELD_TYPE_FOREST);
 
 	while ((GetStatus() & VAKZ_QUIT) == 0)
 	{

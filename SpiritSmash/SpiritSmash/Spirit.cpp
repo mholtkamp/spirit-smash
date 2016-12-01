@@ -23,7 +23,7 @@ Spirit::Spirit()
     m_matter.SetAnimation("Idle");
     m_matter.StartAnimation();
 
-    m_matter.SetTexture(g_pSpiritTex);
+    m_matter.SetTexture(g_pSpirit1Tex);
     m_matter.SetMaterial(g_pDefaultMaterial);
     m_matter.SetPosition(15.0f, 12.0f, MIDDLEGROUND_Z);
     m_matter.SetScale(SPIRIT_SCALE, SPIRIT_SCALE, SPIRIT_SCALE);
@@ -362,16 +362,16 @@ void Spirit::AssignProperTexture()
     switch (m_nPlayerIndex)
     {
     case 0:
-        m_matter.SetTexture(g_pSpiritTex);
+        m_matter.SetTexture(g_pSpirit1Tex);
         break;
     case 1:
-        m_matter.SetTexture(g_pSpiritTex);
+        m_matter.SetTexture(g_pSpirit2Tex);
         break;
     case 2:
-        m_matter.SetTexture(g_pSpiritTex);
+        m_matter.SetTexture(g_pSpirit3Tex);
         break;
     case 3:
-        m_matter.SetTexture(g_pSpiritTex);
+        m_matter.SetTexture(g_pSpirit4Tex);
         break;
     }
 }

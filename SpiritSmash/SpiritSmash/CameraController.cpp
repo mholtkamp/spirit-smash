@@ -4,6 +4,7 @@
 #include "Spirit.h"
 #include "Constants.h"
 
+#include <math.h>
 #include <assert.h>
 
 
@@ -73,12 +74,69 @@ void CameraController::Update_Debug()
 
 void CameraController::AdjustAdaptiveCamera()
 {
-    // For now, just lock onto player 1
-    Spirit* pPlayer1 = Game::GetInstance()->GetSpirit(0);
 
-    float* arPos = pPlayer1->GetPosition();
+    float arSumPos[3] = { 0.0f, 0.0f, 0.0f};
+    float fCamZ = 0.0f;
 
-    m_pCamera->SetPosition(arPos[0],
-                           arPos[1],
-                           CAMERA_Z_OFFSET);
+    FindCenterPosition(arSumPos);
+
+    fCamZ = CalculateCameraZ(arSumPos);
+
+    m_pCamera->SetPosition(arSumPos[0],
+                           arSumPos[1],
+                           fCamZ);
+}
+
+void CameraController::FindCenterPosition(float* arSumPos)
+{
+    int nSpirits = 0;
+    Spirit* pSpirit = 0;
+    float* arPos = 0;
+
+    for (int i = 0; i < MAX_PLAYERS; i++)
+    {
+        pSpirit = Game::GetInstance()->GetSpirit(i);
+
+        if (pSpirit != 0)
+        {
+            arPos = pSpirit->GetPosition();
+
+            arSumPos[0] += arPos[0];
+            arSumPos[1] += arPos[1];
+            nSpirits++;
+        }
+    }
+
+    arSumPos[0] /= nSpirits;
+    arSumPos[1] /= nSpirits;
+}
+
+float CameraController::CalculateCameraZ(float* arCenter)
+{
+    float fZ = CAMERA_Z_OFFSET;
+    float fMaxDist = 0.0f;
+
+    for (int i = 0; i < MAX_PLAYERS; i++)
+    {
+        Spirit* pSpirit = Game::GetInstance()->GetSpirit(i);
+
+        if (pSpirit != 0)
+        {
+            float* arPos = pSpirit->GetPosition();
+            
+            float fDX = arPos[0] - arCenter[0];
+            float fDY = arPos[1] - arCenter[1];
+
+            float fDist = static_cast<float>(sqrt(fDX*fDX + fDY*fDY));
+
+            if (fDist > fMaxDist)
+            {
+                fMaxDist = fDist;
+            }
+        }
+    }
+
+    fZ += fMaxDist * CAMERA_Z_SCALE_FACTOR;
+
+    return fZ;
 }

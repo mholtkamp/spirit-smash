@@ -42,7 +42,7 @@
 #define DEBUG_CAMERA_SPEED 5.0f
 
 #define CAMERA_Z_OFFSET 15.0f
-
+#define CAMERA_Z_SCALE_FACTOR 0.8f
 #define DEAD_ZONE 0.2f
 
 #endif

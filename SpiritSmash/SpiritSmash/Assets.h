@@ -10,7 +10,10 @@
 #include "Sound.h"
 
 // Texture assets
-extern Texture* g_pSpiritTex;
+extern Texture* g_pSpirit1Tex;
+extern Texture* g_pSpirit2Tex;
+extern Texture* g_pSpirit3Tex;
+extern Texture* g_pSpirit4Tex;
 extern Texture* g_pPlatformEndTex;
 extern Texture* g_pPlatformMid1Tex;
 extern Texture* g_pPlatformMid2Tex;
