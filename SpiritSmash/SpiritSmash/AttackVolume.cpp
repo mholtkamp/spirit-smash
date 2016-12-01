@@ -5,6 +5,7 @@
 #include "Assets.h"
 
 #include <math.h>
+#include <assert.h>
 
 OrientedBoxCollider* AttackVolume::s_pAttackCollider = 0;
 
@@ -24,6 +25,8 @@ AttackVolume::AttackVolume()
 
     m_fPriority = 0.0f;
     m_fTime = 0.0f;
+
+    ResetHitPlayers();
 }
 
 AttackVolume::~AttackVolume()
@@ -85,4 +88,25 @@ void AttackVolume::SetPosition(float fX,
 Matter* AttackVolume::GetMatter()
 {
     return &m_matter;
+}
+
+void AttackVolume::ResetHitPlayers()
+{
+    memset(m_arHitPlayers, 0, sizeof(int) * MAX_PLAYERS);
+}
+
+int AttackVolume::HasHitPlayer(int nPlayerIndex)
+{
+    assert(nPlayerIndex >= 0);
+    assert(nPlayerIndex < MAX_PLAYERS);
+
+    return m_arHitPlayers[nPlayerIndex];
+}
+
+void AttackVolume::SetHitPlayer(int nPlayerIndex)
+{
+    assert(nPlayerIndex >= 0);
+    assert(nPlayerIndex < MAX_PLAYERS);
+
+    m_arHitPlayers[nPlayerIndex] = 1;
 }

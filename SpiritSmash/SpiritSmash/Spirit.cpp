@@ -193,6 +193,7 @@ void Spirit::Update_Attack()
         {
             m_nAttacking = 1;
             m_fAttackTime = 0.0f;
+            m_attackVolume.ResetHitPlayers();
         }
     }
     
@@ -281,6 +282,12 @@ void Spirit::Update_Animation()
             m_nAnimState = ANIM_ATTACK;
             m_matter.SetAnimation("Attack");
             m_matter.PlayAnimationOnce("Attack");
+        }
+        else if (m_nJustJumped != 0)
+        {
+            m_nAnimState = ANIM_FALL;
+            m_matter.SetAnimation("Fall");
+            m_matter.PlayAnimationOnce("Jump");
         }
         else if (m_nGrounded != 0)
         {

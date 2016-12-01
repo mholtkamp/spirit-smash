@@ -6,7 +6,9 @@
 #include "VInput.h"
 #include "Assets.h"
 #include <assert.h>
+
 #include "Vakz.h"
+#include <stdio.h>
 
 Game* Game::s_pInstance = 0;
 
@@ -222,6 +224,7 @@ void Game::ResolveAttacks()
 
                 if (pTarget != 0 &&
                     pTarget != pAttacker &&
+                    pAttacker->GetAttackVolume()->HasHitPlayer(j) == 0 &&
                     pAttacker->GetAttackVolume()->GetMatter()->Overlaps(pTarget->GetMatter()))
                 {
                     // The attacking spirit has hit another spirit.
@@ -235,11 +238,13 @@ void Game::ResolveAttacks()
                             // The target had lower attack priority. Hit the player
                             pTarget->ApplyHit(pAttacker->GetPosition(),
                                               pAttacker->GetDamage());
+
+                            pAttacker->GetAttackVolume()->SetHitPlayer(j);
                         }
                         else
                         {
                             // The target had higher priority... so really the target is the attacker.
-                            // How the tables have turned... The attacker will handle the hit application
+                            // Oh how the tables have turned... The attacker will handle the hit application
                         }
                     }
                     else
@@ -248,6 +253,8 @@ void Game::ResolveAttacks()
                         // So apply a hit to the target.
                         pTarget->ApplyHit(pAttacker->GetPosition(),
                                           pAttacker->GetDamage());
+
+                        pAttacker->GetAttackVolume()->SetHitPlayer(j);
                     }
                 }
             }

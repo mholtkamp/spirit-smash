@@ -1,6 +1,8 @@
 #ifndef ATTACK_VOLUME_H
 #define ATTACK_VOLUME_H
 
+#include "Constants.h"
+
 #include "Matter.h"
 #include "OrientedBoxCollider.h"
 
@@ -23,6 +25,12 @@ public:
 
     Matter* GetMatter();
 
+    void ResetHitPlayers();
+
+    int HasHitPlayer(int nPlayerIndex);
+
+    void SetHitPlayer(int nPlayerIndex);
+
 private:
 
     static void CreateSharedCollider();
@@ -36,6 +44,8 @@ private:
     float m_fPriority;
 
     float m_fTime;
+
+    int m_arHitPlayers[MAX_PLAYERS];
 };
 
 
