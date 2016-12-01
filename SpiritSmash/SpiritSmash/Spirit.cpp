@@ -56,9 +56,10 @@ Spirit::Spirit()
 
     m_nAnimState = ANIM_IDLE;
 
-    
+    m_fAttackTime = 0.0f;
 
     m_nAlive = 0;
+    m_nAttacking = 0;
 }
 
 Spirit::~Spirit()
@@ -70,6 +71,7 @@ void Spirit::Update()
 {
     Update_Kinematics();
     Update_Orientation();
+    Update_Attack();
     Update_Animation();
 }
 
@@ -161,13 +163,43 @@ void Spirit::Update_Orientation()
     }
 }
 
+void Spirit::Update_Attack()
+{
+    if (m_nAttacking == 0)
+    {
+        // The character isn't attacking, but check to see if
+        // they pressed X. If so, begin the attack.
+        if (IsControllerButtonDown(VCONT_X, m_nPlayerIndex) &&
+            HasControl() != 0)
+        {
+            m_nAttacking = 1;
+            m_fAttackTime = 0.0f;
+        }
+    }
+    else
+    {
+        m_fAttackTime += Game::GetInstance()->DeltaTime();
+
+        if (m_fAttackTime > SPIRIT_ATTACK_TIME)
+        {
+            m_nAttacking = 0;
+        }
+    }
+
+}
+
 void Spirit::Update_Animation()
 {
     switch (m_nAnimState)
     {
     case ANIM_IDLE:
 
-        if (m_nJustJumped != 0)
+        if (m_nAttacking != 0)
+        {
+            m_nAnimState = ANIM_ATTACK;
+            m_matter.SetAnimation("Attack");
+        }
+        else if (m_nJustJumped != 0)
         {
             m_nAnimState = ANIM_FALL;
             m_matter.SetAnimation("Fall");
@@ -187,7 +219,12 @@ void Spirit::Update_Animation()
 
     case ANIM_MOVE:
 
-        if (m_nJustJumped != 0)
+        if (m_nAttacking != 0)
+        {
+            m_nAnimState = ANIM_ATTACK;
+            m_matter.SetAnimation("Attack");
+        }
+        else if (m_nJustJumped != 0)
         {
             m_nAnimState = ANIM_FALL;
             m_matter.SetAnimation("Fall");
@@ -206,7 +243,13 @@ void Spirit::Update_Animation()
         break;
 
     case ANIM_FALL:
-        if (m_nGrounded != 0)
+        if (m_nAttacking != 0)
+        {
+            m_nAnimState = ANIM_ATTACK;
+            m_matter.SetAnimation("Attack");
+            m_matter.PlayAnimationOnce("Attack");
+        }
+        else if (m_nGrounded != 0)
         {
             if (abs(GetControllerAxisValue(VCONT_AXIS_LTHUMB_X, m_nPlayerIndex)) < DEAD_ZONE)
             {
@@ -223,6 +266,27 @@ void Spirit::Update_Animation()
 
     case ANIM_CHARGE:
 
+        break;
+
+    case ANIM_ATTACK:
+        if (m_nAttacking == 0)
+        {
+            if (m_nGrounded == 0)
+            {
+                m_nAnimState = ANIM_FALL;
+                m_matter.SetAnimation("Fall");
+            }
+            else if (abs(GetControllerAxisValue(VCONT_AXIS_LTHUMB_X, m_nPlayerIndex)) < DEAD_ZONE)
+            {
+                m_nAnimState = ANIM_MOVE;
+                m_matter.SetAnimation("Move");
+            }
+            else
+            {
+                m_nAnimState = ANIM_IDLE;
+                m_matter.SetAnimation("Idle");
+            }
+        }
         break;
 
     default:
@@ -374,4 +438,9 @@ void Spirit::AssignProperTexture()
         m_matter.SetTexture(g_pSpirit4Tex);
         break;
     }
+}
+
+int Spirit::HasControl()
+{
+    return 1;
 }

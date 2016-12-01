@@ -1,4 +1,4 @@
-animationcount 5
+animationcount 6
 framespersecond 60
 
 animation Idle
@@ -39,3 +39,12 @@ keyframe 0 spirit_fall_0.obj
 keyframe 30 spirit_fall_1.obj
 keyframe 60 spirit_fall_2.obj
 end 60
+
+animation Attack
+keyframecount 5
+keyframe 0 spirit_attack_0.obj
+keyframe 9 spirit_attack_1.obj
+keyframe 15 spirit_attack_2.obj
+keyframe 21 spirit_attack_3.obj
+keyframe 30 spirit_attack_4.obj
+end 30

@@ -15,7 +15,8 @@ public:
         ANIM_MOVE       = 1,
         ANIM_FALL       = 3,
         ANIM_CHARGE     = 4,
-        NUM_ANIM_STATES = 5
+        ANIM_ATTACK     = 5,
+        NUM_ANIM_STATES = 6
     };
 
 	Spirit();
@@ -34,6 +35,7 @@ public:
     float* GetPosition();
 
     int IsAlive();
+    int HasControl();
     void Kill();
 
 private:
@@ -42,7 +44,9 @@ private:
 
     void Update_Kinematics();
     void Update_Orientation();
+    void Update_Attack();
     void Update_Animation();
+
     void CheckJump();
     void CheckGrounded();
     void ApplyGravity();
@@ -70,6 +74,7 @@ private:
     int m_nJustJumped;
 
     int m_nAlive;
+    int m_nAttacking;
 
     float m_fXVelocity;
     float m_fYVelocity;
@@ -77,6 +82,8 @@ private:
     int m_nDirection;
 
     int m_nAnimState;
+
+    float m_fAttackTime;
 
     // Shared collider. Always same size for all spirits
     static OrientedBoxCollider* s_pSpiritCollider;
