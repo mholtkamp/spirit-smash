@@ -61,5 +61,6 @@
 #define ORB_MAX_SIZE 2.5f
 #define ORB_HALF_EXTENTS 0.5f
 #define ORB_LIGHT_RADIUS_SCALE 3.0f
+#define ORB_RIM_SIZE 0.5f
 
 #endif
