@@ -433,6 +433,8 @@ void Spirit::CheckGrounded()
     if (nHit != 0)
     {
         m_nGrounded = 1;
+        m_nJumpCharges = 1;
+        m_fYVelocity = 0.0f;
     }
     else
     {
