@@ -43,6 +43,10 @@ public:
     int IsAttacking();
     int GetDamage();
 
+    void SetPosition(float fX, 
+                     float fY,
+                     float fZ);
+
     int HasControl();
     void Kill();
 

@@ -8,24 +8,24 @@ ForestField::ForestField()
     m_arPlatforms = new Platform[FIELD_FOREST_PLATFORM_COUNT];
 
     // Spawn 0
-    m_arSpawns[0][0] = 7.0f;
-    m_arSpawns[0][1] = 7.0f;
+    m_arSpawns[0][0] = 15.0f;
+    m_arSpawns[0][1] = 11.0f;
     m_arSpawns[0][2] = 0.0f;
 
     // Spawn 1
-    m_arSpawns[0][0] = 7.0f;
-    m_arSpawns[0][1] = 7.0f;
-    m_arSpawns[0][2] = 0.0f;
+    m_arSpawns[1][0] = 15.0f;
+    m_arSpawns[1][1] = 6.0f;
+    m_arSpawns[1][2] = 0.0f;
 
     // Spawn 2
-    m_arSpawns[0][0] = 7.0f;
-    m_arSpawns[0][1] = 7.0f;
-    m_arSpawns[0][2] = 0.0f;
+    m_arSpawns[2][0] = 4.0f;
+    m_arSpawns[2][1] = 18.0f;
+    m_arSpawns[2][2] = 0.0f;
 
     // Spawn 3
-    m_arSpawns[0][0] = 7.0f;
-    m_arSpawns[0][1] = 7.0f;
-    m_arSpawns[0][2] = 0.0f;
+    m_arSpawns[3][0] = 26.0f;
+    m_arSpawns[3][1] = 18.0f;
+    m_arSpawns[3][2] = 0.0f;
 
     // Kill Extents
     m_arKillExtents[KILL_LEFT]   = -0.0f;

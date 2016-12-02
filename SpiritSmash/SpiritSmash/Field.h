@@ -15,6 +15,8 @@ public:
 
     virtual void Update();
 
+    void SpawnSpirit(class Spirit* pSpirit);
+
 protected:
 
     class Game* m_pGame;

@@ -260,6 +260,9 @@ void Game::ResolveAttacks()
             }
         }
     }
+}
 
-
+Field* Game::GetField()
+{
+    return m_pField;
 }

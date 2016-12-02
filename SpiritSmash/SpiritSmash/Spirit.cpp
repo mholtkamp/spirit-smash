@@ -37,7 +37,7 @@ Spirit::Spirit()
     // Attributes
     m_nPlayerIndex = 0;
     m_nPercent     = 0;
-    m_nLives       = 1;
+    m_nLives       = SPIRIT_STARTING_LIVES;
     m_nDamage      = SPIRIT_DEFAULT_DAMAGE;
     m_nJumpCharges = 0;
 
@@ -60,7 +60,7 @@ Spirit::Spirit()
 
     m_fAttackTime = 0.0f;
 
-    m_nAlive = 0;
+    m_nAlive = 1;
     m_nAttacking = 0;
 }
 
@@ -132,7 +132,7 @@ void Spirit::Update_Kinematics()
 
     // Bounce the player if going faster than allowed speed.
     if (nHit != 0 &&
-        m_fXVelocity > m_fSpeed)
+        abs(m_fXVelocity) > m_fSpeed)
     {
         m_fXVelocity = -m_fXVelocity;
     }
@@ -377,7 +377,11 @@ int Spirit::IsAlive()
 
 void Spirit::Kill()
 {
-    m_nAlive = 0;
+    m_nLives--;
+    m_nPercent = 0;
+    m_fXVelocity = 0.0f;
+    m_fYVelocity = 0.0f;
+    Game::GetInstance()->GetField()->SpawnSpirit(this);
 }
 
 float* Spirit::GetPosition()
@@ -538,4 +542,15 @@ void Spirit::ApplyHit(float* arInstigatorPos,
 
     m_fXVelocity = fKnockbackSpeed * arDir[0];
     m_fYVelocity = fKnockbackSpeed * arDir[1];
+}
+
+void Spirit::SetPosition(float fX,
+                         float fY,
+                         float fZ)
+{
+    m_arPosition[0] = fX;
+    m_arPosition[1] = fY;
+    m_arPosition[2] = fZ;
+    
+    m_matter.SetPosition(fX, fY, fZ);
 }
