@@ -2,6 +2,7 @@
 #define SPIRIT_H
 
 #include "AttackVolume.h"
+#include "Orb.h"
 
 #include "Matter.h"
 #include "OrientedBoxCollider.h"
@@ -104,6 +105,8 @@ private:
     float m_fAttackTime;
 
     AttackVolume m_attackVolume;
+
+    Orb m_arOrbs[SPIRIT_MAX_ORBS];
 
     // Shared collider. Always same size for all spirits
     static OrientedBoxCollider* s_pSpiritCollider;
