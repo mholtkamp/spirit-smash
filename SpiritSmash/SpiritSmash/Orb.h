@@ -21,6 +21,8 @@ public:
     Orb();
     ~Orb();
 
+    void Reset();
+
     static void CreateSharedObjects();
 
     void Update();

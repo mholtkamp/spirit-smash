@@ -266,7 +266,7 @@ void Spirit::Update_Charge()
     {
 
         m_arOrbs[m_nWorkingOrb].SetState(Orb::ORB_CHARGING);
-        if (m_arOrbs->IncreaseSize(fDeltaTime * SPIRIT_DEFAULT_CHARGE_RATE))
+        if (m_arOrbs[m_nWorkingOrb].IncreaseSize(fDeltaTime * SPIRIT_DEFAULT_CHARGE_RATE))
         {
             m_nAction = ACTION_NONE;
             m_arOrbs[m_nWorkingOrb].SetState(Orb::ORB_INACTIVE);
@@ -297,6 +297,8 @@ void Spirit::Update_Release()
             {
                 m_nWorkingOrb = 0;
             }
+
+            m_arOrbs[m_nWorkingOrb].Reset();
         }
     }
 
@@ -444,7 +446,8 @@ void Spirit::Update_Animation()
         break;
 
     case ANIM_ATTACK:
-        if (m_nAction != ACTION_ATTACK)
+        if (m_nAction != ACTION_ATTACK && 
+            m_nAction != ACTION_RELEASE)
         {
             if (m_nAction == ACTION_CHARGE)
             {

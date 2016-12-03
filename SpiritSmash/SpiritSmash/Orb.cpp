@@ -48,6 +48,15 @@ Orb::Orb()
     Game::GetInstance()->GetScene()->AddActor(&m_light);
 }
 
+void Orb::Reset()
+{
+    m_fSize = ORB_MIN_SIZE;
+    m_fSpeed = 0.0f;
+    m_matter.SetScale(ORB_MIN_SIZE, ORB_MIN_SIZE, ORB_MIN_SIZE);
+    m_light.SetRadius(ORB_LIGHT_RADIUS_SCALE * m_fSize);
+    m_light.SetIntensity(ORB_LIGHT_INTENSITY * m_fSize);
+}
+
 void Orb::CreateSharedObjects()
 {
     if (s_pSharedCollider == 0)
@@ -115,6 +124,9 @@ void Orb::Update()
         m_matter.SetPosition(arNewPos[0],
                              arNewPos[1],
                              arNewPos[2]);
+        m_light.SetPosition(arNewPos[0],
+                            arNewPos[1],
+                            arNewPos[2]);
 
         if (IsOutOfKillBounds())
         {
@@ -241,6 +253,15 @@ void Orb::Launch(float fDirection)
     {
         m_fSpeed = -m_fSpeed;
     }
+
+    float* arSpiritPos = m_pOwner->GetPosition();
+    int nRight = m_pOwner->GetDirection() == DIRECTION_RIGHT;
+    m_matter.SetPosition(arSpiritPos[0] + (nRight ? ORB_SPIRIT_OFFSET_X : -ORB_SPIRIT_OFFSET_X),
+                         arSpiritPos[1] + ORB_SPIRIT_OFFSET_Y,
+                         MIDDLEGROUND_Z);
+    m_light.SetPosition(arSpiritPos[0] + (nRight ? ORB_SPIRIT_OFFSET_X : -ORB_SPIRIT_OFFSET_X),
+                        arSpiritPos[1] + ORB_SPIRIT_OFFSET_Y,
+                        MIDDLEGROUND_Z);
 
     SetState(ORB_LAUNCHED);
 }
