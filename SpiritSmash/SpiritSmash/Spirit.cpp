@@ -604,7 +604,14 @@ void Spirit::CheckGrounded()
 
 void Spirit::ApplyGravity()
 {
-    m_fYVelocity -= GRAVITY * Game::GetInstance()->DeltaTime();
+    if (GetControllerAxisValue(VCONT_AXIS_LTHUMB_Y, m_nPlayerIndex) < -DEAD_ZONE)
+    {
+        m_fYVelocity -= FAST_FALL_GRAVITY * Game::GetInstance()->DeltaTime();
+    }
+    else
+    {
+        m_fYVelocity -= GRAVITY * Game::GetInstance()->DeltaTime();
+    }
 }
 
 void Spirit::ApplyDrag()
