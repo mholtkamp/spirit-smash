@@ -173,6 +173,9 @@ void Game::Update()
 
     // After all players have moved, resolve their attacks
     ResolveAttacks();
+
+    // Then resolve orbs
+    ResolveOrbs();
 }
 
 Spirit* Game::GetSpirit(int nPlayerIndex)
@@ -256,6 +259,65 @@ void Game::ResolveAttacks()
 
                         pAttacker->GetAttackVolume()->SetHitPlayer(j);
                     }
+                }
+            }
+        }
+    }
+}
+
+void Game::ResolveOrbs()
+{
+    for (int i = 0; i < MAX_PLAYERS; i++)
+    {
+        Spirit* pOwner = m_arSpirit[i];
+
+        if (pOwner == 0)
+        {
+            // this spirit doesn't exist.
+            continue;
+        }
+
+        Orb* arOrbs = pOwner->GetOrbArray();
+
+        for (int j = 0; j < SPIRIT_MAX_ORBS; j++)
+        {
+            Orb* pOrb = &arOrbs[j];
+
+            if (pOrb->GetState() == Orb::ORB_LAUNCHED)
+            {
+                // The orb is being launched so we gotta check if it overlaps 
+                // any spirits first
+                int nHit = 0;
+
+                for (int k = 0; k < MAX_PLAYERS; k++)
+                {
+                    if (k == i)
+                    {
+                        // Do not check if the player's own orb overlaps with themselves.
+                        continue;
+                    }
+
+                    if (m_arSpirit[k] == 0)
+                    {
+                        // This player doesn't exist
+                        continue;
+                    }
+                    
+                    // Check if the orb overlaps the other player's spirit
+                    if (pOrb->GetMatter()->Overlaps(m_arSpirit[k]->GetMatter()))
+                    {
+                        // It does! Let the orb calculate the way in which
+                        // it applies a hit to the spirit.
+                        pOrb->ApplyHit(m_arSpirit[k]);
+
+                        nHit = 1;
+                    }
+                }
+
+                // If the orb hit any player, deactivate it
+                if (nHit != 0)
+                {
+                    pOrb->SetState(Orb::ORB_INACTIVE);
                 }
             }
         }

@@ -49,6 +49,8 @@ public:
     void ApplyHit(float* arInstigatorPos,
                   int nDamage);
 
+    void ApplyDamage(int nDamage);
+
     int IsAlive();
     int IsAttacking();
     int GetDamage();
@@ -60,6 +62,8 @@ public:
 
     int HasControl();
     void Kill();
+
+    Orb* GetOrbArray();
 
     Matter* GetMatter();
 

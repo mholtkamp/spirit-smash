@@ -156,21 +156,18 @@ void Spirit::Update_Kinematics()
         m_fXVelocity = -m_fXVelocity;
     }
 
-    // Translate in Y if not grounded.
-    if (m_nGrounded == 0)
+
+    nHit = 0;
+    nHit = m_matter.Translate(0.0f, fDeltaTime * m_fYVelocity, 0.0f);
+
+    if (nHit != 0)
     {
-        nHit = 0;
-        nHit = m_matter.Translate(0.0f, fDeltaTime * m_fYVelocity, 0.0f);
-
-        if (nHit != 0)
+        if (m_fYVelocity < 0.0f)
         {
-            if (m_fYVelocity < 0.0f)
-            {
-                m_nJumpCharges = 1;
-            }
-
-            m_fYVelocity = 0.0f;
+            m_nJumpCharges = 1;
         }
+
+        m_fYVelocity = 0.0f;
     }
 
     // Sync position with 
@@ -704,6 +701,11 @@ void Spirit::ApplyHit(float* arInstigatorPos,
     m_fYVelocity = fKnockbackSpeed * arDir[1];
 }
 
+void Spirit::ApplyDamage(int nDamage)
+{
+    m_nPercent += nDamage;
+}
+
 void Spirit::SetPosition(float fX,
                          float fY,
                          float fZ)
@@ -718,4 +720,9 @@ void Spirit::SetPosition(float fX,
 int Spirit::GetDirection()
 {
     return m_nDirection;
+}
+
+Orb* Spirit::GetOrbArray()
+{
+    return m_arOrbs;
 }

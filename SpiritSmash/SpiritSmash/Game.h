@@ -31,6 +31,8 @@ public:
 
     void ResolveAttacks();
 
+    void ResolveOrbs();
+
     Spirit* GetSpirit(int nPlayerIndex);
 
     Field* GetField();

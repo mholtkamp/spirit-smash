@@ -263,5 +263,39 @@ void Orb::Launch(float fDirection)
                         arSpiritPos[1] + ORB_SPIRIT_OFFSET_Y,
                         MIDDLEGROUND_Z);
 
+    m_matter.SetScale(m_fSize, m_fSize, m_fSize);
+    m_light.SetIntensity(m_fSize * ORB_LIGHT_RADIUS_SCALE);
+
     SetState(ORB_LAUNCHED);
+}
+
+void Orb::ApplyHit(Spirit* pTarget)
+{
+    assert(pTarget != m_pOwner);
+
+    int nDamage = static_cast<int>((m_fSize - ORB_MIN_SIZE) * ORB_DAMAGE_SCALE);
+
+    // Clamp the damage
+    if (nDamage < ORB_MIN_DAMAGE)
+        nDamage = ORB_MIN_DAMAGE;
+    if (nDamage > ORB_MAX_DAMAGE)
+        nDamage = ORB_MAX_DAMAGE;
+
+    // Only apply hit if the orb is at least half charged
+    if (m_fSize > (ORB_MAX_SIZE - ORB_MIN_SIZE) / 2 + ORB_MIN_SIZE)
+    {
+        const float* arMatterPos = m_matter.GetPosition();
+        float arInstPos[3] = { arMatterPos[0],
+            arMatterPos[1],
+            arMatterPos[2] };
+
+        arInstPos[1] -= ORB_INSTIGATOR_OFFSET;
+
+        pTarget->ApplyHit(arInstPos, nDamage);
+    }
+    else
+    {
+        // Orb not big enough so do not hit, but do apply damage.
+        pTarget->ApplyDamage(nDamage);
+    }
 }

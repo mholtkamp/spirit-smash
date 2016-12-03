@@ -39,6 +39,8 @@ public:
 
     void Launch(float fDirection);
 
+    void ApplyHit(class Spirit* pTarget);
+
 private:
 
     int IsOutOfKillBounds();
