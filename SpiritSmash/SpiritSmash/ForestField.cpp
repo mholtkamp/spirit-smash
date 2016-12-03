@@ -18,20 +18,20 @@ ForestField::ForestField()
     m_arSpawns[1][2] = 0.0f;
 
     // Spawn 2
-    m_arSpawns[2][0] = 4.0f;
+    m_arSpawns[2][0] = 2.0f;
     m_arSpawns[2][1] = 18.0f;
     m_arSpawns[2][2] = 0.0f;
 
     // Spawn 3
-    m_arSpawns[3][0] = 26.0f;
+    m_arSpawns[3][0] = 28.0f;
     m_arSpawns[3][1] = 18.0f;
     m_arSpawns[3][2] = 0.0f;
 
     // Kill Extents
-    m_arKillExtents[KILL_LEFT]   = -0.0f;
-    m_arKillExtents[KILL_RIGHT]  = 30.0f;
-    m_arKillExtents[KILL_TOP]    = 25.0f;
-    m_arKillExtents[KILL_BOTTOM] = -5.0f;
+    m_arKillExtents[KILL_LEFT]   = -15.0f;
+    m_arKillExtents[KILL_RIGHT]  = 45.0f;
+    m_arKillExtents[KILL_TOP]    = 45.0f;
+    m_arKillExtents[KILL_BOTTOM] = -10.0f;
 
     m_pSun = new DirectionalLight();
     m_pSun->SetColor(0.8f, 1.0f, 1.0f);
@@ -97,14 +97,14 @@ void ForestField::Update()
 void ForestField::Generate()
 {
     // Middleground (gameplay) platforms
-    m_arPlatforms[0].Generate(2, 13.0f, 16.0f, MIDDLEGROUND_Z);
-    m_arPlatforms[1].Generate(3, 0.0f,  14.0f, MIDDLEGROUND_Z);
-    m_arPlatforms[2].Generate(3, 24.0f, 14.0f, MIDDLEGROUND_Z);
+    m_arPlatforms[0].Generate(2, 13.0f, 18.0f, MIDDLEGROUND_Z);
+    m_arPlatforms[1].Generate(3, -2.0f,  14.0f, MIDDLEGROUND_Z);
+    m_arPlatforms[2].Generate(3, 26.0f, 14.0f, MIDDLEGROUND_Z);
     m_arPlatforms[3].Generate(2, 8.0f,  12.0f, MIDDLEGROUND_Z);
     m_arPlatforms[4].Generate(2, 18.0f, 12.0f, MIDDLEGROUND_Z);
     m_arPlatforms[5].Generate(5, 10.0f, 7.0f,  MIDDLEGROUND_Z);
     m_arPlatforms[6].Generate(2, 3.0f,  3.0f,  MIDDLEGROUND_Z);
-    m_arPlatforms[7].Generate(3, 12.0f, 1.0f,  MIDDLEGROUND_Z);
+    m_arPlatforms[7].Generate(6, 9.0f,  1.0f,  MIDDLEGROUND_Z);
     m_arPlatforms[8].Generate(2, 23.0f, 3.0f,  MIDDLEGROUND_Z);
 
     // Background platforms
