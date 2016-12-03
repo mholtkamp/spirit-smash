@@ -73,6 +73,7 @@ private:
     void Update_Orientation();
     void Update_Attack();
     void Update_Charge();
+    void Update_Release();
     void Update_Animation();
     void Update_Orbs();
 

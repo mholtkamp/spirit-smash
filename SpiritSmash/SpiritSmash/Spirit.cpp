@@ -77,6 +77,7 @@ void Spirit::Update()
     Update_Orientation();
     Update_Attack();
     Update_Charge();
+    Update_Release();
     Update_Animation();
     Update_Orbs();
 }
@@ -123,11 +124,25 @@ void Spirit::Update_Kinematics()
         // We want to increase his xvelocity
         m_fXVelocity += fAccelX * fDeltaTime;
 
-        // Clamp
-        if (m_fXVelocity > m_fSpeed)
-            m_fXVelocity = m_fSpeed;
-        if (m_fXVelocity < -m_fSpeed)
-            m_fXVelocity = -m_fSpeed;
+        if (m_nAction == ACTION_CHARGE)
+        {
+            float fScaledSpeed = m_fSpeed * SPIRIT_CHARGING_MOVE_SCALE;
+
+            // Clamp to a lower speed because of charging
+            if (m_fXVelocity > fScaledSpeed)
+                m_fXVelocity = fScaledSpeed;
+            if (m_fXVelocity < -fScaledSpeed)
+                m_fXVelocity = -fScaledSpeed;
+        }
+        else
+        {
+            // Clamp normally
+            if (m_fXVelocity > m_fSpeed)
+                m_fXVelocity = m_fSpeed;
+            if (m_fXVelocity < -m_fSpeed)
+                m_fXVelocity = -m_fSpeed;
+        }
+
     }
 
     // Translate in X
@@ -251,11 +266,48 @@ void Spirit::Update_Charge()
     {
 
         m_arOrbs[m_nWorkingOrb].SetState(Orb::ORB_CHARGING);
-        m_arOrbs->IncreaseSize(fDeltaTime * SPIRIT_DEFAULT_CHARGE_RATE);
+        if (m_arOrbs->IncreaseSize(fDeltaTime * SPIRIT_DEFAULT_CHARGE_RATE))
+        {
+            m_nAction = ACTION_NONE;
+            m_arOrbs[m_nWorkingOrb].SetState(Orb::ORB_INACTIVE);
+        }
     }
     else
     {
         m_arOrbs[m_nWorkingOrb].SetState(Orb::ORB_INACTIVE);
+    }
+}
+
+void Spirit::Update_Release()
+{
+    if (m_nAction != ACTION_ATTACK &&
+        m_nAction != ACTION_RELEASE)
+    {
+        if (IsControllerButtonJustDown(VCONT_B, m_nPlayerIndex))
+        {
+            m_nAction = ACTION_RELEASE;
+
+            m_arOrbs[m_nWorkingOrb].Launch(m_nDirection == DIRECTION_RIGHT ? 1.0f : -1.0f);
+            
+            m_fAttackTime = 0.0f;
+
+            m_nWorkingOrb++;
+            
+            if (m_nWorkingOrb >= SPIRIT_MAX_ORBS)
+            {
+                m_nWorkingOrb = 0;
+            }
+        }
+    }
+
+    if (m_nAction == ACTION_RELEASE)
+    {
+        m_fAttackTime += Game::GetInstance()->DeltaTime();
+
+        if (m_fAttackTime > SPIRIT_ATTACK_TIME)
+        {
+            m_nAction = ACTION_NONE;
+        }
     }
 }
 
@@ -265,7 +317,8 @@ void Spirit::Update_Animation()
     {
     case ANIM_IDLE:
 
-        if (m_nAction == ACTION_ATTACK)
+        if (m_nAction == ACTION_ATTACK || 
+            m_nAction == ACTION_RELEASE)
         {
             m_nAnimState = ANIM_ATTACK;
             m_matter.SetAnimation("Attack");
@@ -295,7 +348,8 @@ void Spirit::Update_Animation()
 
     case ANIM_MOVE:
 
-        if (m_nAction == ACTION_ATTACK)
+        if (m_nAction == ACTION_ATTACK ||
+            m_nAction == ACTION_RELEASE)
         {
             m_nAnimState = ANIM_ATTACK;
             m_matter.SetAnimation("Attack");
@@ -325,7 +379,8 @@ void Spirit::Update_Animation()
         break;
 
     case ANIM_FALL:
-        if (m_nAction == ACTION_ATTACK)
+        if (m_nAction == ACTION_ATTACK ||
+            m_nAction == ACTION_RELEASE)
         {
             m_nAnimState = ANIM_ATTACK;
             m_matter.SetAnimation("Attack");
@@ -360,7 +415,8 @@ void Spirit::Update_Animation()
     case ANIM_CHARGE:
         if (m_nAction != ACTION_CHARGE)
         {
-            if (m_nAction == ACTION_ATTACK)
+            if (m_nAction == ACTION_ATTACK ||
+                m_nAction == ACTION_RELEASE)
             {
                 m_nAnimState = ANIM_ATTACK;
                 m_matter.SetAnimation("Attack");
