@@ -22,6 +22,15 @@ public:
         NUM_ANIM_STATES = 6
     };
 
+    enum Action
+    {
+        ACTION_NONE      = 0,
+        ACTION_ATTACK    = 1,
+        ACTION_CHARGE    = 2,
+        ACTION_RELEASE   = 3,
+        NUM_ACTIONS      = 4
+    };
+
 	Spirit();
 	~Spirit();
 
@@ -43,6 +52,7 @@ public:
     int IsAlive();
     int IsAttacking();
     int GetDamage();
+    int GetDirection();
 
     void SetPosition(float fX, 
                      float fY,
@@ -62,7 +72,9 @@ private:
     void Update_Kinematics();
     void Update_Orientation();
     void Update_Attack();
+    void Update_Charge();
     void Update_Animation();
+    void Update_Orbs();
 
     void CheckJump();
     void CheckGrounded();
@@ -92,7 +104,7 @@ private:
     int m_nJustJumped;
 
     int m_nAlive;
-    int m_nAttacking;
+    int m_nAction;
     int m_nJumpCharges;
 
     float m_fXVelocity;
@@ -107,6 +119,7 @@ private:
     AttackVolume m_attackVolume;
 
     Orb m_arOrbs[SPIRIT_MAX_ORBS];
+    int m_nWorkingOrb;
 
     // Shared collider. Always same size for all spirits
     static OrientedBoxCollider* s_pSpiritCollider;

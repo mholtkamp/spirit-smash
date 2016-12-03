@@ -17,6 +17,9 @@ public:
 
     void SpawnSpirit(class Spirit* pSpirit);
 
+    int IsOutOfKillBounds(float fX,
+                          float fY);
+
 protected:
 
     class Game* m_pGame;

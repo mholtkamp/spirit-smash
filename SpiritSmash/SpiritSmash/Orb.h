@@ -29,6 +29,8 @@ public:
 
     int GetState();
 
+    void SetState(int nState);
+
     void SetOwner(int nPlayerIndex);
 
     int IncreaseSize(float fDeltaSize);
@@ -37,6 +39,9 @@ public:
 
 private:
 
+    int IsOutOfKillBounds();
+
+    class Spirit* m_pOwner;
     int m_nOwner;
     int m_nState;
     float m_fSpeed;

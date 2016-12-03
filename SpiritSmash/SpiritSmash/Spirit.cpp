@@ -61,7 +61,9 @@ Spirit::Spirit()
     m_fAttackTime = 0.0f;
 
     m_nAlive = 1;
-    m_nAttacking = 0;
+    m_nAction = ACTION_NONE;
+
+    m_nWorkingOrb = 0;
 }
 
 Spirit::~Spirit()
@@ -74,7 +76,9 @@ void Spirit::Update()
     Update_Kinematics();
     Update_Orientation();
     Update_Attack();
+    Update_Charge();
     Update_Animation();
+    Update_Orbs();
 }
 
 void Spirit::Update_Kinematics()
@@ -166,7 +170,8 @@ void Spirit::Update_Kinematics()
 void Spirit::Update_Orientation()
 {
     // Only update the orientation if not attacking.
-    if (m_nAttacking == 0)
+    if (m_nAction != ACTION_ATTACK ||
+        m_nAction != ACTION_RELEASE)
     {
         // First, just determined the direction
         if (GetControllerAxisValue(VCONT_AXIS_LTHUMB_X, m_nPlayerIndex) < -DEAD_ZONE)
@@ -184,20 +189,20 @@ void Spirit::Update_Orientation()
 
 void Spirit::Update_Attack()
 {
-    if (m_nAttacking == 0)
+    if (m_nAction != ACTION_ATTACK)
     {
         // The character isn't attacking, but check to see if
         // they pressed X. If so, begin the attack.
         if (IsControllerButtonDown(VCONT_X, m_nPlayerIndex) &&
             HasControl() != 0)
         {
-            m_nAttacking = 1;
+            m_nAction = ACTION_ATTACK;
             m_fAttackTime = 0.0f;
             m_attackVolume.ResetHitPlayers();
         }
     }
     
-    if (m_nAttacking != 0)
+    if (m_nAction == ACTION_ATTACK)
     {
         m_fAttackTime += Game::GetInstance()->DeltaTime();
 
@@ -216,10 +221,42 @@ void Spirit::Update_Attack()
 
         if (m_fAttackTime > SPIRIT_ATTACK_TIME)
         {
-            m_nAttacking = 0;
+            m_nAction = ACTION_NONE;
+        }
+    }
+}
+
+void Spirit::Update_Charge()
+{
+    float fDeltaTime = Game::GetInstance()->DeltaTime();
+
+    if (m_nAction != ACTION_CHARGE)
+    {
+        // Only allow charging if no other action is being performed.
+        if (m_nAction == ACTION_NONE &&
+            GetControllerAxisValue(VCONT_AXIS_RTRIGGER, m_nPlayerIndex) > DEAD_ZONE)
+        {
+            m_nAction = ACTION_CHARGE;
+        }
+    }
+    else
+    {
+        if (GetControllerAxisValue(VCONT_AXIS_RTRIGGER, m_nPlayerIndex) <= DEAD_ZONE)
+        {
+            m_nAction = ACTION_NONE;
         }
     }
 
+    if (m_nAction == ACTION_CHARGE)
+    {
+
+        m_arOrbs[m_nWorkingOrb].SetState(Orb::ORB_CHARGING);
+        m_arOrbs->IncreaseSize(fDeltaTime * SPIRIT_DEFAULT_CHARGE_RATE);
+    }
+    else
+    {
+        m_arOrbs[m_nWorkingOrb].SetState(Orb::ORB_INACTIVE);
+    }
 }
 
 void Spirit::Update_Animation()
@@ -228,10 +265,15 @@ void Spirit::Update_Animation()
     {
     case ANIM_IDLE:
 
-        if (m_nAttacking != 0)
+        if (m_nAction == ACTION_ATTACK)
         {
             m_nAnimState = ANIM_ATTACK;
             m_matter.SetAnimation("Attack");
+        }
+        else if (m_nAction == ACTION_CHARGE)
+        {
+            m_nAnimState = ANIM_CHARGE;
+            m_matter.SetAnimation("Charge");
         }
         else if (m_nJustJumped != 0)
         {
@@ -253,10 +295,15 @@ void Spirit::Update_Animation()
 
     case ANIM_MOVE:
 
-        if (m_nAttacking != 0)
+        if (m_nAction == ACTION_ATTACK)
         {
             m_nAnimState = ANIM_ATTACK;
             m_matter.SetAnimation("Attack");
+        }
+        else if (m_nAction == ACTION_CHARGE)
+        {
+            m_nAnimState = ANIM_CHARGE;
+            m_matter.SetAnimation("Charge");
         }
         else if (m_nJustJumped != 0)
         {
@@ -269,6 +316,7 @@ void Spirit::Update_Animation()
             m_nAnimState = ANIM_FALL;
             m_matter.SetAnimation("Fall");
         }
+        
         else if (abs(GetControllerAxisValue(VCONT_AXIS_LTHUMB_X, m_nPlayerIndex)) <= DEAD_ZONE)
         {
             m_nAnimState = ANIM_IDLE;
@@ -277,11 +325,16 @@ void Spirit::Update_Animation()
         break;
 
     case ANIM_FALL:
-        if (m_nAttacking != 0)
+        if (m_nAction == ACTION_ATTACK)
         {
             m_nAnimState = ANIM_ATTACK;
             m_matter.SetAnimation("Attack");
             m_matter.PlayAnimationOnce("Attack");
+        }
+        else if (m_nAction == ACTION_CHARGE)
+        {
+            m_nAnimState = ANIM_CHARGE;
+            m_matter.SetAnimation("Charge");
         }
         else if (m_nJustJumped != 0)
         {
@@ -305,12 +358,44 @@ void Spirit::Update_Animation()
         break;
 
     case ANIM_CHARGE:
-
+        if (m_nAction != ACTION_CHARGE)
+        {
+            if (m_nAction == ACTION_ATTACK)
+            {
+                m_nAnimState = ANIM_ATTACK;
+                m_matter.SetAnimation("Attack");
+                m_matter.PlayAnimationOnce("Attack");
+            }
+            if (m_nGrounded == 0)
+            {
+                m_nAnimState = ANIM_FALL;
+                m_matter.SetAnimation("Fall");
+            }
+            else if (m_nGrounded != 0)
+            {
+                if (abs(GetControllerAxisValue(VCONT_AXIS_LTHUMB_X, m_nPlayerIndex)) < DEAD_ZONE)
+                {
+                    m_nAnimState = ANIM_MOVE;
+                    m_matter.SetAnimation("Move");
+                }
+                else
+                {
+                    m_nAnimState = ANIM_IDLE;
+                    m_matter.SetAnimation("Idle");
+                }
+            }
+        }
         break;
 
     case ANIM_ATTACK:
-        if (m_nAttacking == 0)
+        if (m_nAction != ACTION_ATTACK)
         {
+            if (m_nAction == ACTION_CHARGE)
+            {
+                m_nAnimState = ANIM_CHARGE;
+                m_matter.SetAnimation("Charge");
+            }
+
             if (m_nGrounded == 0)
             {
                 m_nAnimState = ANIM_FALL;
@@ -331,6 +416,14 @@ void Spirit::Update_Animation()
 
     default:
         break;
+    }
+}
+
+void Spirit::Update_Orbs()
+{
+    for (int i = 0; i < SPIRIT_MAX_ORBS; i++)
+    {
+        m_arOrbs[i].Update();
     }
 }
 
@@ -358,6 +451,12 @@ void Spirit::SetPlayerIndex(int nIndex)
     m_nPlayerIndex = nIndex;
 
     AssignProperTexture();
+
+    // Set owner for orbs
+    for (int i = 0; i < SPIRIT_MAX_ORBS; i++)
+    {
+        m_arOrbs[i].SetOwner(m_nPlayerIndex);
+    }
 }
 
 void Spirit::SetLives(int nLives)
@@ -510,7 +609,7 @@ AttackVolume* Spirit::GetAttackVolume()
 
 int Spirit::IsAttacking()
 {
-    return m_nAttacking;
+    return (m_nAction == ACTION_ATTACK);
 }
 
 int Spirit::GetDamage()
@@ -555,4 +654,9 @@ void Spirit::SetPosition(float fX,
     m_arPosition[2] = fZ;
     
     m_matter.SetPosition(fX, fY, fZ);
+}
+
+int Spirit::GetDirection()
+{
+    return m_nDirection;
 }

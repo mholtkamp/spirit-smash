@@ -39,3 +39,19 @@ void Field::SpawnSpirit(Spirit* pSpirit)
                          m_arSpawns[nRand][1],
                          0.0f);
 }
+
+int Field::IsOutOfKillBounds(float fX,
+                             float fY)
+
+{
+    if (fX > m_arKillExtents[KILL_RIGHT])
+        return 1;
+    else if (fX < m_arKillExtents[KILL_LEFT])
+        return 1;
+    else if (fY > m_arKillExtents[KILL_BOTTOM])
+        return 1;
+    else if (fY < m_arKillExtents[KILL_TOP])
+        return 1;
+
+    return 0;
+}
