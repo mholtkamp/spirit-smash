@@ -8,7 +8,7 @@
 
 static float COLOR_1[4] = { 0.0f, 0.0f, 1.0f, 1.0f };
 static float COLOR_2[4] = { 1.0f, 0.0f, 0.0f, 1.0f };
-static float COLOR_3[4] = { 0.0f, 1.0f, 1.0f, 1.0f };
+static float COLOR_3[4] = { 0.0f, 1.0f, 0.0f, 1.0f };
 static float COLOR_4[4] = { 1.0f, 1.0f, 1.0f, 1.0f };
 
 static float* COLORS[4] = { 

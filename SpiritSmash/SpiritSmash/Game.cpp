@@ -86,8 +86,8 @@ void Game::Start(int nPlayers,
 {
     int i = 0;
 
-    assert(nPlayers >= 0);
-    assert(nPlayers < MAX_PLAYERS);
+    assert(nPlayers >= 2);
+    assert(nPlayers <= MAX_PLAYERS);
 
     m_nNumPlayers = nPlayers;
 

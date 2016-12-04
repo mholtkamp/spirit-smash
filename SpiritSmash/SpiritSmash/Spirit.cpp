@@ -24,7 +24,7 @@ Spirit::Spirit()
     m_matter.StartAnimation();
 
     m_matter.SetTexture(g_pSpirit1Tex);
-    m_matter.SetMaterial(g_pDefaultMaterial);
+    m_matter.SetMaterial(g_pDefaultToonMaterial);
     m_matter.SetPosition(15.0f, 12.0f, MIDDLEGROUND_Z);
     m_matter.SetScale(SPIRIT_SCALE, SPIRIT_SCALE, SPIRIT_SCALE);
     m_matter.AddCollider(s_pSpiritCollider);
@@ -611,7 +611,7 @@ void Spirit::CheckGrounded()
 
 void Spirit::ApplyGravity()
 {
-    if (GetControllerAxisValue(VCONT_AXIS_LTHUMB_Y, m_nPlayerIndex) < -DEAD_ZONE)
+    if (GetControllerAxisValue(VCONT_AXIS_LTHUMB_Y, m_nPlayerIndex) < -0.5f)
     {
         m_fYVelocity -= FAST_FALL_GRAVITY * Game::GetInstance()->DeltaTime();
     }

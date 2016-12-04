@@ -106,9 +106,4 @@ void ForestField::Generate()
     m_arPlatforms[6].Generate(2, 3.0f,  3.0f,  MIDDLEGROUND_Z);
     m_arPlatforms[7].Generate(6, 9.0f,  1.0f,  MIDDLEGROUND_Z);
     m_arPlatforms[8].Generate(2, 23.0f, 3.0f,  MIDDLEGROUND_Z);
-
-    // Background platforms
-    m_arPlatforms[9].Generate(2,  20.0f, 16.0f, BACKGROUND_Z);
-    m_arPlatforms[10].Generate(2, 22.0f, 9.0f,  BACKGROUND_Z);
-    m_arPlatforms[11].Generate(2, 3.0f,  7.0f,  BACKGROUND_Z);
 }
