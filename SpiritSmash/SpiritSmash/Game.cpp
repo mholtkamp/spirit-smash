@@ -91,6 +91,8 @@ void Game::Start(int nPlayers,
 
     m_nNumPlayers = nPlayers;
 
+    // First generate the battlefield
+
     switch (nField)
     {
     case FIELD_TYPE_FOREST:
@@ -102,11 +104,15 @@ void Game::Start(int nPlayers,
 
     m_pField->Generate();
 
+    // Create the spirits that will be controlled by players
     for (i = 0; i < nPlayers; i++)
     {
         m_arSpirit[i] = new Spirit();
         m_arSpirit[i]->SetPlayerIndex(i);
     }
+
+    // Setup the HUD that will display lives/percents
+    m_pHUD = new HUD();
 
     // Disable any test rendering
     Matter::SetGlobalColliderRenderingEnable(0);
@@ -121,14 +127,23 @@ void Game::End()
 
     for (i = 0; i < m_nNumPlayers; i++)
     {
-        delete m_arSpirit[i];
-        m_arSpirit[i] = 0;
+        if (m_arSpirit[i] != 0)
+        {
+            delete m_arSpirit[i];
+            m_arSpirit[i] = 0;
+        }
     }
 
     if (m_pField != 0)
     {
         delete m_pField;
         m_pField = 0;
+    }
+
+    if (m_pHUD != 0)
+    {
+        delete m_pHUD;
+        m_pHUD = 0;
     }
 }
 
@@ -327,4 +342,9 @@ void Game::ResolveOrbs()
 Field* Game::GetField()
 {
     return m_pField;
+}
+
+HUD* Game::GetHUD()
+{
+    return m_pHUD;
 }

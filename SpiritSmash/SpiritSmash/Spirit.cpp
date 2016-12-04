@@ -533,7 +533,14 @@ int Spirit::IsAlive()
 void Spirit::Kill()
 {
     m_nLives--;
+
+    if (m_nLives < 0)
+        m_nLives = 0;
+    Game::GetInstance()->GetHUD()->SetLives(m_nPlayerIndex, m_nLives);
+
     m_nPercent = 0;
+    Game::GetInstance()->GetHUD()->SetPercent(m_nPlayerIndex, m_nPercent);
+
     m_fXVelocity = 0.0f;
     m_fYVelocity = 0.0f;
     Game::GetInstance()->GetField()->SpawnSpirit(this);
@@ -684,6 +691,7 @@ void Spirit::ApplyHit(float* arInstigatorPos,
     int nDamage)
 {
     m_nPercent += nDamage;
+    Game::GetInstance()->GetHUD()->SetPercent(m_nPlayerIndex, m_nPercent);
 
     float arDir[3] = { 0.0f, 0.0f, 0.0f };
 
@@ -711,6 +719,7 @@ void Spirit::ApplyHit(float* arInstigatorPos,
 void Spirit::ApplyDamage(int nDamage)
 {
     m_nPercent += nDamage;
+    Game::GetInstance()->GetHUD()->SetPercent(m_nPlayerIndex, m_nPercent);
 }
 
 void Spirit::SetPosition(float fX,

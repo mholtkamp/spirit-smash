@@ -3,6 +3,7 @@
 
 #include "Field.h"
 #include "Spirit.h"
+#include "HUD.h"
 #include "CameraController.h"
 #include "Scene.h"
 #include "Timer.h"
@@ -37,6 +38,8 @@ public:
 
     Field* GetField();
 
+    HUD* GetHUD();
+
     void Start(int nPlayers,
                int nField);
 
@@ -61,6 +64,7 @@ private:
 
     Field*  m_pField;
     Spirit* m_arSpirit[4];
+    HUD* m_pHUD;
     int m_nNumPlayers;
     int m_nState;
 

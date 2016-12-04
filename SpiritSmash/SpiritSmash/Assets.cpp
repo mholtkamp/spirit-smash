@@ -9,7 +9,8 @@ Texture* g_pSpirit4Tex                      = 0;
 Texture* g_pPlatformEndTex                  = 0;
 Texture* g_pPlatformMid1Tex                 = 0;
 Texture* g_pPlatformMid2Tex                 = 0;
-Texture* g_pSkysphereTex = 0;
+Texture* g_pSkysphereTex                    = 0;
+Texture* g_pCircleTex                       = 0;
 
 // Static Mesh assets
 StaticMesh* g_pPlatformLeftMesh             = 0;
@@ -59,6 +60,9 @@ void LoadAssets()
 
         g_pSkysphereTex = new Texture();
         g_pSkysphereTex->LoadBMP("Data/Textures/skysphere_tex.bmp");
+
+        g_pCircleTex = new Texture();
+        g_pCircleTex->LoadBMP("Data/Textures/circle.bmp", 1);
 
         // Static Meshes
         g_pPlatformLeftMesh = new StaticMesh();
@@ -110,6 +114,8 @@ void DestroyAssets()
     delete g_pPlatformEndTex;
     delete g_pPlatformMid1Tex;
     delete g_pPlatformMid2Tex;
+    delete g_pSkysphereTex;
+    delete g_pCircleTex;
 
     // Static Meshes
     delete g_pPlatformLeftMesh;
