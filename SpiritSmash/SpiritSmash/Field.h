@@ -20,6 +20,8 @@ public:
     int IsOutOfKillBounds(float fX,
                           float fY);
 
+    void GetRandomSpawnLocation(float* arOutPos);
+
 protected:
 
     class Game* m_pGame;

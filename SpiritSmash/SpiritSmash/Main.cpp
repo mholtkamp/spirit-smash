@@ -24,8 +24,8 @@ int main()
 
     Game* pGame = Game::CreateInstance();
 
-    // Start a game with 1 player on the forest field
-    pGame->Start(3, FIELD_TYPE_FOREST);
+    // Start a game with X player on the forest field
+    pGame->Start(2, FIELD_TYPE_FOREST);
 
 	while ((GetStatus() & VAKZ_QUIT) == 0)
 	{

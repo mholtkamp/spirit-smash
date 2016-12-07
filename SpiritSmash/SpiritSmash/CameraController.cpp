@@ -97,7 +97,8 @@ void CameraController::FindCenterPosition(float* arSumPos)
     {
         pSpirit = Game::GetInstance()->GetSpirit(i);
 
-        if (pSpirit != 0)
+        if (pSpirit != 0 &&
+            pSpirit->IsEliminated() == 0)
         {
             arPos = pSpirit->GetPosition();
 
@@ -120,7 +121,8 @@ float CameraController::CalculateCameraZ(float* arCenter)
     {
         Spirit* pSpirit = Game::GetInstance()->GetSpirit(i);
 
-        if (pSpirit != 0)
+        if (pSpirit != 0 &&
+            pSpirit->IsEliminated() == 0)
         {
             float* arPos = pSpirit->GetPosition();
             

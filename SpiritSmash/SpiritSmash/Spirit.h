@@ -62,12 +62,16 @@ public:
 
     int HasControl();
     void Kill();
+    void Eliminate();
+    void Respawn();
 
     Orb* GetOrbArray();
 
     Matter* GetMatter();
 
     AttackVolume* GetAttackVolume();
+
+    int IsEliminated();
 
 private:
 
@@ -80,6 +84,7 @@ private:
     void Update_Release();
     void Update_Animation();
     void Update_Orbs();
+    void Update_Dead();
 
     void CheckJump();
     void CheckGrounded();
@@ -129,8 +134,11 @@ private:
     // Shared collider. Always same size for all spirits
     static OrientedBoxCollider* s_pSpiritCollider;
 
+    float m_fSpawnTimer;
+    int m_nEliminated;
 
-
+    float m_arDeathLoc[3];
+    float m_arSpawnLoc[3];
 };
 
 #endif

@@ -4,6 +4,7 @@
 #include <stdlib.h>
 #include <time.h>
 #include <Windows.h>
+#include <assert.h>
 
 Field::Field()
 {
@@ -37,7 +38,18 @@ void Field::SpawnSpirit(Spirit* pSpirit)
 
     pSpirit->SetPosition(m_arSpawns[nRand][0],
                          m_arSpawns[nRand][1],
-                         0.0f);
+                         MIDDLEGROUND_Z);
+}
+
+void Field::GetRandomSpawnLocation(float* arOutPos)
+{
+    assert(arOutPos != 0);
+
+    int nRand = rand() % FIELD_NUM_SPAWNS;
+
+    arOutPos[0] = m_arSpawns[nRand][0];
+    arOutPos[1] = m_arSpawns[nRand][1];
+    arOutPos[2] = MIDDLEGROUND_Z;
 }
 
 int Field::IsOutOfKillBounds(float fX,

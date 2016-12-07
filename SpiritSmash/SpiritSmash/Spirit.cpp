@@ -64,6 +64,15 @@ Spirit::Spirit()
     m_nAction = ACTION_NONE;
 
     m_nWorkingOrb = 0;
+    m_fSpawnTimer = 0.0f; 
+    m_nEliminated = 0;
+
+    // Zero out positions
+    for (int i = 0; i < 3; i++)
+    {
+        m_arSpawnLoc[i] = 0.0f;
+        m_arDeathLoc[i] = 0.0f;
+    }
 }
 
 Spirit::~Spirit()
@@ -73,13 +82,20 @@ Spirit::~Spirit()
 
 void Spirit::Update()
 {
-    Update_Kinematics();
-    Update_Orientation();
-    Update_Attack();
-    Update_Charge();
-    Update_Release();
-    Update_Animation();
-    Update_Orbs();
+    if (m_nAlive != 0)
+    {
+        Update_Kinematics();
+        Update_Orientation();
+        Update_Attack();
+        Update_Charge();
+        Update_Release();
+        Update_Animation();
+        Update_Orbs();
+    }
+    else if (m_nEliminated == 0)
+    {
+        Update_Dead();
+    }
 }
 
 void Spirit::Update_Kinematics()
@@ -483,6 +499,27 @@ void Spirit::Update_Orbs()
     }
 }
 
+void Spirit::Update_Dead()
+{
+    assert(m_nAlive == 0);
+
+    m_fSpawnTimer -= Game::GetInstance()->DeltaTime();
+
+    if (m_fSpawnTimer <= 0.0f)
+    {
+        Respawn();
+    }
+    else
+    {
+        // Set position of player by interpolating between death position
+        // and the new spawn location.
+        float t = m_fSpawnTimer / SPIRIT_SPAWN_TIME;
+        m_arPosition[0] = t*m_arDeathLoc[0] + (1.0f - t)*m_arSpawnLoc[0];
+        m_arPosition[1] = t*m_arDeathLoc[1] + (1.0f - t)*m_arSpawnLoc[1];
+        m_arPosition[2] = MIDDLEGROUND_Z;
+    }
+}
+
 int Spirit::GetPercent()
 {
     return m_nPercent;
@@ -535,7 +572,16 @@ void Spirit::Kill()
     m_nLives--;
 
     if (m_nLives < 0)
+    {
         m_nLives = 0;
+    }   
+
+    if (m_nLives == 0)
+    {
+        Eliminate();
+    }
+        
+
     Game::GetInstance()->GetHUD()->SetLives(m_nPlayerIndex, m_nLives);
 
     m_nPercent = 0;
@@ -543,7 +589,19 @@ void Spirit::Kill()
 
     m_fXVelocity = 0.0f;
     m_fYVelocity = 0.0f;
-    Game::GetInstance()->GetField()->SpawnSpirit(this);
+    Game::GetInstance()->GetField()->GetRandomSpawnLocation(m_arSpawnLoc);
+
+    // Save the death position. Used for interpolating the position 
+    // of the spirit during respawn time for a smooth death transition.
+    m_arDeathLoc[0] = m_arPosition[0];
+    m_arDeathLoc[1] = m_arPosition[1];
+    m_arDeathLoc[2] = m_arPosition[2];
+
+    m_nAlive = 0;
+    m_fSpawnTimer = SPIRIT_SPAWN_TIME;
+
+    // Disable mesh 
+    m_matter.SetVisible(0);
 }
 
 float* Spirit::GetPosition()
@@ -688,38 +746,44 @@ int Spirit::GetDamage()
 }
 
 void Spirit::ApplyHit(float* arInstigatorPos,
-    int nDamage)
+                      int nDamage)
 {
-    m_nPercent += nDamage;
-    Game::GetInstance()->GetHUD()->SetPercent(m_nPlayerIndex, m_nPercent);
-
-    float arDir[3] = { 0.0f, 0.0f, 0.0f };
-
-    // Calculate the vector pointing from instigator position 
-    // to this spirit's position
-    arDir[0] = m_arPosition[0] - arInstigatorPos[0];
-    arDir[1] = m_arPosition[1] - arInstigatorPos[1];
-    arDir[2] = 0.0f;
-
-    // Normalize this direction.
-    float fMag = sqrt(arDir[0] * arDir[0] + arDir[1] * arDir[1]);
-
-    if (fMag != 0.0f)
+    if (m_nAlive != 0)
     {
-        arDir[0] /= fMag;
-        arDir[1] /= fMag;
+        m_nPercent += nDamage;
+        Game::GetInstance()->GetHUD()->SetPercent(m_nPlayerIndex, m_nPercent);
+
+        float arDir[3] = { 0.0f, 0.0f, 0.0f };
+
+        // Calculate the vector pointing from instigator position 
+        // to this spirit's position
+        arDir[0] = m_arPosition[0] - arInstigatorPos[0];
+        arDir[1] = m_arPosition[1] - arInstigatorPos[1];
+        arDir[2] = 0.0f;
+
+        // Normalize this direction.
+        float fMag = sqrt(arDir[0] * arDir[0] + arDir[1] * arDir[1]);
+
+        if (fMag != 0.0f)
+        {
+            arDir[0] /= fMag;
+            arDir[1] /= fMag;
+        }
+
+        float fKnockbackSpeed = SPIRIT_BASE_KNOCKBACK_SPEED + m_nPercent * SPIRIT_PERCENT_KNOCKBACK_MULTIPLIER;
+
+        m_fXVelocity = fKnockbackSpeed * arDir[0];
+        m_fYVelocity = fKnockbackSpeed * arDir[1];
     }
-
-    float fKnockbackSpeed = SPIRIT_BASE_KNOCKBACK_SPEED + m_nPercent * SPIRIT_PERCENT_KNOCKBACK_MULTIPLIER;
-
-    m_fXVelocity = fKnockbackSpeed * arDir[0];
-    m_fYVelocity = fKnockbackSpeed * arDir[1];
 }
 
 void Spirit::ApplyDamage(int nDamage)
 {
-    m_nPercent += nDamage;
-    Game::GetInstance()->GetHUD()->SetPercent(m_nPlayerIndex, m_nPercent);
+    if (m_nAlive != 0)
+    {
+        m_nPercent += nDamage;
+        Game::GetInstance()->GetHUD()->SetPercent(m_nPlayerIndex, m_nPercent);
+    }
 }
 
 void Spirit::SetPosition(float fX,
@@ -741,4 +805,25 @@ int Spirit::GetDirection()
 Orb* Spirit::GetOrbArray()
 {
     return m_arOrbs;
+}
+
+void Spirit::Eliminate()
+{
+    m_nEliminated = 1;
+}
+
+void Spirit::Respawn()
+{
+    SetPosition(m_arSpawnLoc[0],
+                m_arSpawnLoc[1],
+                MIDDLEGROUND_Z);
+
+    m_nAlive = 1;
+
+    m_matter.SetVisible(1);
+}
+
+int Spirit::IsEliminated()
+{
+    return m_nEliminated;
 }
