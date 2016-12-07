@@ -18,6 +18,9 @@ public:
     
     void AdjustAdaptiveCamera();
 
+    float Clamp(float fValue, 
+                const float fMin, 
+                const float fMax);
 
 private:
 

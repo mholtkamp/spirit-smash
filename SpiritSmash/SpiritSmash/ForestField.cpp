@@ -30,8 +30,14 @@ ForestField::ForestField()
     // Kill Extents
     m_arKillExtents[KILL_LEFT]   = -15.0f;
     m_arKillExtents[KILL_RIGHT]  = 45.0f;
-    m_arKillExtents[KILL_TOP]    = 45.0f;
+    m_arKillExtents[KILL_TOP]    = 40.0f;
     m_arKillExtents[KILL_BOTTOM] = -10.0f;
+
+    // Clamp bounds 
+    m_arClampBounds[KILL_LEFT]   = -7.0f;
+    m_arClampBounds[KILL_RIGHT]  = 38.0f;
+    m_arClampBounds[KILL_TOP]    = 33.0f;
+    m_arClampBounds[KILL_BOTTOM] = -3.0f;
 
     m_pSun = new DirectionalLight();
     m_pSun->SetColor(0.8f, 1.0f, 1.0f);

@@ -93,6 +93,11 @@ void CameraController::FindCenterPosition(float* arSumPos)
     Spirit* pSpirit = 0;
     float* arPos = 0;
 
+    const float* arClampBounds = Game::GetInstance()->GetField()->GetClampBounds();
+
+    float fFieldClampMax = 0;
+    float fFieldClampMin = 0;
+
     for (int i = 0; i < MAX_PLAYERS; i++)
     {
         pSpirit = Game::GetInstance()->GetSpirit(i);
@@ -102,8 +107,8 @@ void CameraController::FindCenterPosition(float* arSumPos)
         {
             arPos = pSpirit->GetPosition();
 
-            arSumPos[0] += arPos[0];
-            arSumPos[1] += arPos[1];
+            arSumPos[0] += Clamp(arPos[0], arClampBounds[KILL_LEFT],   arClampBounds[KILL_RIGHT]);
+            arSumPos[1] += Clamp(arPos[1], arClampBounds[KILL_BOTTOM], arClampBounds[KILL_TOP]);
             nSpirits++;
         }
     }
@@ -117,6 +122,8 @@ float CameraController::CalculateCameraZ(float* arCenter)
     float fZ = CAMERA_Z_OFFSET;
     float fMaxDist = 0.0f;
 
+    const float* arClampBounds = Game::GetInstance()->GetField()->GetClampBounds();
+
     for (int i = 0; i < MAX_PLAYERS; i++)
     {
         Spirit* pSpirit = Game::GetInstance()->GetSpirit(i);
@@ -126,8 +133,8 @@ float CameraController::CalculateCameraZ(float* arCenter)
         {
             float* arPos = pSpirit->GetPosition();
             
-            float fDX = arPos[0] - arCenter[0];
-            float fDY = arPos[1] - arCenter[1];
+            float fDX = Clamp(arPos[0], arClampBounds[KILL_LEFT], arClampBounds[KILL_RIGHT]) - arCenter[0];
+            float fDY = Clamp(arPos[1], arClampBounds[KILL_BOTTOM], arClampBounds[KILL_TOP]) - arCenter[1];
 
             float fDist = static_cast<float>(sqrt(fDX*fDX + fDY*fDY));
 
@@ -141,4 +148,16 @@ float CameraController::CalculateCameraZ(float* arCenter)
     fZ += fMaxDist * CAMERA_Z_SCALE_FACTOR;
 
     return fZ;
+}
+
+float CameraController::Clamp(float fValue,
+                              float fMin,
+                              float fMax)
+{
+    if (fValue < fMin)
+        return fMin;
+    if (fValue > fMax)
+        return fMax;
+
+    return fValue;
 }

@@ -22,6 +22,10 @@ public:
 
     void GetRandomSpawnLocation(float* arOutPos);
 
+    void SetStartPosition(class Spirit* pSpirit, int nIndex);
+
+    const float* GetClampBounds();
+
 protected:
 
     class Game* m_pGame;
@@ -29,6 +33,7 @@ protected:
     Matter* m_arMatter;
     float m_arSpawns[4][3];
     float m_arKillExtents[4];
+    float m_arClampBounds[4];
 
 };
 

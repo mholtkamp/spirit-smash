@@ -67,3 +67,19 @@ int Field::IsOutOfKillBounds(float fX,
 
     return 0;
 }
+
+const float* Field::GetClampBounds()
+{
+    return m_arClampBounds;
+}
+
+void Field::SetStartPosition(Spirit* pSpirit, int nIndex)
+{
+    assert(pSpirit != 0);
+    assert(nIndex >= 0);
+    assert(nIndex < MAX_PLAYERS);
+
+    pSpirit->SetPosition(m_arSpawns[nIndex][0],
+                         m_arSpawns[nIndex][1],
+                         MIDDLEGROUND_Z);
+}

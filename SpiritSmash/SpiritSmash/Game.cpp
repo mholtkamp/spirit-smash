@@ -109,6 +109,7 @@ void Game::Start(int nPlayers,
     {
         m_arSpirit[i] = new Spirit();
         m_arSpirit[i]->SetPlayerIndex(i);
+        m_pField->SetStartPosition(m_arSpirit[i], i);
     }
 
     // Setup the HUD that will display lives/percents
