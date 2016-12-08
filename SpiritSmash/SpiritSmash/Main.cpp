@@ -14,6 +14,14 @@
 #include <stdio.h>
 #include <math.h>
 
+enum GameState
+{
+    STATE_MENU = 0,
+    STATE_GAME = 1
+};
+
+static int s_nGameState = STATE_MENU;
+
 int main()
 {
 	SetFullScreen(1);
@@ -26,17 +34,33 @@ int main()
     Menu* pMenu = new Menu();
     Game* pGame = Game::CreateInstance();
 
-    // Start a game with X player on the forest field
     pMenu->SetCurrentScene();
-    pGame->Start(4, FIELD_TYPE_FOREST);
 
 	while ((GetStatus() & VAKZ_QUIT) == 0)
 	{
 		// Vakz Update
 		Update();
 
-        pGame->Update();
+        // Update based on state
+        switch (s_nGameState)
+        {
+        case STATE_MENU:
+        {
+            int nStart = pMenu->Update();
 
+            if (nStart != 0)
+            {
+                pGame->Start(pMenu->GetNumPlayers(), FIELD_TYPE_FOREST);
+                pGame->SetCurrentScene();
+                s_nGameState = STATE_GAME;
+            }
+            break;
+        }
+        case STATE_GAME:
+            pGame->Update();
+            break;
+        }
+        
         // Vakz Render
 		Render();
 	}

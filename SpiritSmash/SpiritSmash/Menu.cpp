@@ -3,6 +3,7 @@
 #include "Constants.h"
 #include "Assets.h"
 #include "Vakz.h"
+#include <stdio.h>
 
 static float COLOR_1_MIN[4] = { 0.2f, 0.2f, 1.0f, 0.2f };
 static float COLOR_2_MIN[4] = { 1.0f, 0.2f, 0.2f, 0.2f };
@@ -39,33 +40,61 @@ int Menu::Update()
     // change the player count.
     for (int i = 0; i < MAX_PLAYERS; i++)
     {
-        if (IsControllerButtonJustDown(i, VCONT_R1))
+        if (IsControllerConnected(i))
         {
-            m_nNumPlayers++;
-        }
-        else if (IsControllerButtonJustDown(i, VCONT_L1))
-        {
-            m_nNumPlayers--;
-        }
+            if (IsControllerButtonJustDown(VCONT_R1, i))
+            {
+                SetNumPlayers(m_nNumPlayers + 1);
+            }
+            else if (IsControllerButtonJustDown(VCONT_L1, i))
+            {
+                SetNumPlayers(m_nNumPlayers - 1);
+            }
 
-        if (IsControllerButtonJustDown(i, VCONT_START))
-        {
-            nRet = 1;
-        }
-
-        // Clamp num players
-        if (m_nNumPlayers < MIN_PLAYERS)
-        {
-            m_nNumPlayers = MIN_PLAYERS;
-        }
-
-        if (m_nNumPlayers > MAX_PLAYERS)
-        {
-            m_nNumPlayers = MAX_PLAYERS;
+            if (IsControllerButtonJustDown(VCONT_START, i) ||
+                IsControllerButtonJustDown(VCONT_A, i))
+            {
+                nRet = 1;
+            }
         }
     }
 
     return nRet;
+}
+
+void Menu::SetNumPlayers(int nNumPlayers)
+{
+    m_nNumPlayers = nNumPlayers;
+
+    // Clamp num players
+    if (m_nNumPlayers < MIN_PLAYERS)
+    {
+        m_nNumPlayers = MIN_PLAYERS;
+    }
+
+    if (m_nNumPlayers > MAX_PLAYERS)
+    {
+        m_nNumPlayers = MAX_PLAYERS;
+    }
+
+    // Update graphics
+    char arString[32] = { 0 };
+    sprintf(arString, "Players: %d", m_nNumPlayers);
+    m_textPlayers.SetText(arString);
+
+    for (int i = 0; i < MAX_PLAYERS; i++)
+    {
+        if (i < m_nNumPlayers)
+        {
+            m_arParticles[i].SetOrigin(TITLE_PARTICLES_X + TITLE_PARTICLES_SPACING*i, 0.0f, 0.0f);
+        }
+        else
+        {
+            m_arParticles[i].SetOrigin(DEATH_PARTICLE_INACTIVE_LOC, 
+                                       DEATH_PARTICLE_INACTIVE_LOC, 
+                                       DEATH_PARTICLE_INACTIVE_LOC);
+        }
+    }
 }
 
 int Menu::GetNumPlayers()

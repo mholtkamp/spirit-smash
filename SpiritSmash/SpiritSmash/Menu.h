@@ -19,6 +19,8 @@ public:
 
     void SetCurrentScene();
 
+    void SetNumPlayers(int nNumPlayers);
+
 private:
 
     void InitializeCamera();
