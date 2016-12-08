@@ -912,8 +912,8 @@ void Spirit::Update_DeathParticle()
         if (m_fParticleTimer <= 0.0f)
         {
             m_deathParticle.SetOrigin(DEATH_PARTICLE_INACTIVE_LOC,
-                DEATH_PARTICLE_INACTIVE_LOC,
-                DEATH_PARTICLE_INACTIVE_LOC);
+                                      DEATH_PARTICLE_INACTIVE_LOC,
+                                      DEATH_PARTICLE_INACTIVE_LOC);
         }
     }
 }

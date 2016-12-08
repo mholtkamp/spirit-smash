@@ -46,7 +46,6 @@ Game::Game()
     m_arSpirit[3] = 0;
 
     m_pScene = new Scene();
-    SetScene(m_pScene);
     m_pScene->SetAmbientLight(LIGHTING_AMBIENT_INTENSITY, 
                               LIGHTING_AMBIENT_INTENSITY, 
                               LIGHTING_AMBIENT_INTENSITY, 
@@ -79,6 +78,11 @@ Game::~Game()
         delete m_pCamera;
         m_pCamera = 0;
     }    
+}
+
+void Game::SetCurrentScene()
+{
+    SetScene(m_pScene);
 }
 
 void Game::Start(int nPlayers,

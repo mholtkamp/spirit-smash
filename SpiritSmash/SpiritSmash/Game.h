@@ -53,6 +53,8 @@ public:
 
     int InDebugMode();
 
+    void SetCurrentScene();
+
 private:
 
     Game();

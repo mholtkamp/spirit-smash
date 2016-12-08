@@ -11,6 +11,7 @@ Texture* g_pPlatformMid1Tex                 = 0;
 Texture* g_pPlatformMid2Tex                 = 0;
 Texture* g_pSkysphereTex                    = 0;
 Texture* g_pCircleTex                       = 0;
+Texture* g_pTitleTex                        = 0;
 
 // Static Mesh assets
 StaticMesh* g_pPlatformLeftMesh             = 0;
@@ -64,6 +65,9 @@ void LoadAssets()
         g_pCircleTex = new Texture();
         g_pCircleTex->LoadBMP("Data/Textures/circle.bmp", 1);
 
+        g_pTitleTex = new Texture();
+        g_pTitleTex->LoadBMP("Data/Textures/title_tex.bmp");
+
         // Static Meshes
         g_pPlatformLeftMesh = new StaticMesh();
         g_pPlatformLeftMesh->Load("Data/StaticMeshes/platform_left.obj");
@@ -116,6 +120,7 @@ void DestroyAssets()
     delete g_pPlatformMid2Tex;
     delete g_pSkysphereTex;
     delete g_pCircleTex;
+    delete g_pTitleTex;
 
     // Static Meshes
     delete g_pPlatformLeftMesh;

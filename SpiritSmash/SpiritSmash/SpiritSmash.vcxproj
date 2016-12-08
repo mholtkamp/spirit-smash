@@ -77,6 +77,7 @@
     <ClCompile Include="Game.cpp" />
     <ClCompile Include="HUD.cpp" />
     <ClCompile Include="Main.cpp" />
+    <ClCompile Include="Menu.cpp" />
     <ClCompile Include="Orb.cpp" />
     <ClCompile Include="Platform.cpp" />
     <ClCompile Include="Spirit.cpp" />
@@ -90,6 +91,7 @@
     <ClInclude Include="ForestField.h" />
     <ClInclude Include="Game.h" />
     <ClInclude Include="HUD.h" />
+    <ClInclude Include="Menu.h" />
     <ClInclude Include="Orb.h" />
     <ClInclude Include="Platform.h" />
     <ClInclude Include="Spirit.h" />

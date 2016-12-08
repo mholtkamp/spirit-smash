@@ -19,6 +19,7 @@ extern Texture* g_pPlatformMid1Tex;
 extern Texture* g_pPlatformMid2Tex;
 extern Texture* g_pSkysphereTex;
 extern Texture* g_pCircleTex;
+extern Texture* g_pTitleTex;
 
 // Static Mesh assets
 extern StaticMesh* g_pPlatformLeftMesh;
