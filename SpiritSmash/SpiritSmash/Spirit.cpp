@@ -31,8 +31,14 @@ Spirit::Spirit()
     m_matter.SetPhysical(1);
     m_matter.SetMobile(1);
     m_matter.EnableColliderRendering();
-
     m_pGame->GetScene()->AddActor(&m_matter);
+
+    float arParMinColor[4] = { 1.0f, 1.0f, 1.0, 0.1f };
+    float arParMaxColor[4] = { 1.0f, 1.0f, 1.0, 0.3f };
+    m_deathParticle.SetColor(arParMinColor, arParMaxColor);
+    m_deathParticle.SetSize(10.0f, 40.0f);
+    m_deathParticle.Initialize();
+    m_pGame->GetScene()->AddActor(&m_deathParticle);
 
     // Attributes
     m_nPlayerIndex = 0;
@@ -602,6 +608,9 @@ void Spirit::Kill()
 
     // Disable mesh 
     m_matter.SetVisible(0);
+    
+    // Shoot out particles
+    PlayDeathParticle();
 }
 
 float* Spirit::GetPosition()
@@ -826,4 +835,35 @@ void Spirit::Respawn()
 int Spirit::IsEliminated()
 {
     return m_nEliminated;
+}
+
+void Spirit::PlayDeathParticle()
+{
+    float fXVelocity = 0.0f;
+    float fYVelocity = 0.0f;
+
+    float arKillExtents[4] = { 0.0f };
+    float arVelocity[3] = { 0.0f };
+    float arVariance[3] = { 4.0f, 4.0f, 4.0f };
+
+    Game::GetInstance()->GetField()->GetKillExtents(arKillExtents);
+
+    if (m_arDeathLoc[0] < arKillExtents[KILL_LEFT])
+        arVelocity[0] = DEATH_PARTICLE_VELOCITY;
+    if (m_arDeathLoc[0] > arKillExtents[KILL_RIGHT])
+        arVelocity[0] = -DEATH_PARTICLE_VELOCITY;
+    if (m_arDeathLoc[1] < arKillExtents[KILL_BOTTOM])
+        arVelocity[1] = DEATH_PARTICLE_VELOCITY;
+    if (m_arDeathLoc[1] > arKillExtents[KILL_TOP])
+        arVelocity[1] = -DEATH_PARTICLE_VELOCITY;
+
+    m_deathParticle.SetOrigin(m_arDeathLoc[0],
+                              m_arDeathLoc[1],
+                              m_arDeathLoc[2]);
+    m_deathParticle.SetVelocity(arVelocity, arVelocity);
+    
+    m_deathParticle.SetSpawnVariance(arVariance[0],
+                                     arVariance[1],
+                                     arVariance[2]);
+    m_deathParticle.SetGenerate(1);
 }

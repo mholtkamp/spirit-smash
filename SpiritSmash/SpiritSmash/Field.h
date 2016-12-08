@@ -22,6 +22,8 @@ public:
 
     void GetRandomSpawnLocation(float* arOutPos);
 
+    void GetKillExtents(float* arOutExtents);
+
     void SetStartPosition(class Spirit* pSpirit, int nIndex);
 
     const float* GetClampBounds();

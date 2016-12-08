@@ -6,6 +6,7 @@
 
 #include "Matter.h"
 #include "OrientedBoxCollider.h"
+#include "ParticleSystem.h"
 
 class Spirit
 {
@@ -91,11 +92,14 @@ private:
     void ApplyGravity();
     void ApplyDrag();
     void AssignProperTexture();
+    void PlayDeathParticle();
 
     // Reference to the game
     class Game* m_pGame;
 
 	Matter m_matter;
+
+    ParticleSystem m_deathParticle;
     
     float m_arPosition[3];
 

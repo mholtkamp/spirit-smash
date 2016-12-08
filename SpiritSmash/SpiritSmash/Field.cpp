@@ -83,3 +83,13 @@ void Field::SetStartPosition(Spirit* pSpirit, int nIndex)
                          m_arSpawns[nIndex][1],
                          MIDDLEGROUND_Z);
 }
+
+void Field::GetKillExtents(float* arOutExtents)
+{
+    assert(arOutExtents != 0);
+
+    for (int i = 0; i < 4; i++)
+    {
+        arOutExtents[i] = m_arKillExtents[i];
+    }
+}
