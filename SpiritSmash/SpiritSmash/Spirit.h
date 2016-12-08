@@ -86,6 +86,7 @@ private:
     void Update_Animation();
     void Update_Orbs();
     void Update_Dead();
+    void Update_DeathParticle();
 
     void CheckJump();
     void CheckGrounded();
@@ -139,6 +140,7 @@ private:
     static OrientedBoxCollider* s_pSpiritCollider;
 
     float m_fSpawnTimer;
+    float m_fParticleTimer;
     int m_nEliminated;
 
     float m_arDeathLoc[3];

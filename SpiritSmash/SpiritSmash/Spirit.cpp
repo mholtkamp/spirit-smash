@@ -9,6 +9,18 @@
 
 OrientedBoxCollider* Spirit::s_pSpiritCollider = 0;
 
+static float COLOR_1_MIN[4] = { 0.2f, 0.2f, 1.0f, 0.2f };
+static float COLOR_2_MIN[4] = { 1.0f, 0.2f, 0.2f, 0.2f };
+static float COLOR_3_MIN[4] = { 0.2f, 1.0f, 0.2f, 0.2f };
+static float COLOR_4_MIN[4] = { 0.4f, 0.4f, 0.4f, 0.2f };
+static float* PARTICLE_MIN_COLORS[4] = { COLOR_1_MIN, COLOR_2_MIN, COLOR_3_MIN, COLOR_4_MIN };
+
+static float COLOR_1_MAX[4] = { 0.2f, 0.2f, 1.0f, 1.0f };
+static float COLOR_2_MAX[4] = { 1.0f, 0.2f, 0.2f, 1.0f };
+static float COLOR_3_MAX[4] = { 0.2f, 1.0f, 0.2f, 1.0f };
+static float COLOR_4_MAX[4] = { 1.0f, 1.0f, 1.0f, 1.0f };
+static float* PARTICLE_MAX_COLORS[4] = { COLOR_1_MAX, COLOR_2_MAX, COLOR_3_MAX, COLOR_4_MAX };
+
 Spirit::Spirit()
 {
     // Attempt to create a shared collider
@@ -33,10 +45,14 @@ Spirit::Spirit()
     m_matter.EnableColliderRendering();
     m_pGame->GetScene()->AddActor(&m_matter);
 
-    float arParMinColor[4] = { 1.0f, 1.0f, 1.0, 0.1f };
-    float arParMaxColor[4] = { 1.0f, 1.0f, 1.0, 0.3f };
-    m_deathParticle.SetColor(arParMinColor, arParMaxColor);
+    float arGravity[3] = { 0.0f, 0.0f, 0.0f };
     m_deathParticle.SetSize(10.0f, 40.0f);
+    m_deathParticle.SetGravity(arGravity);
+    m_deathParticle.SetLifetime(DEATH_PARTICLE_MIN_LIFETIME, DEATH_PARTICLE_MAX_LIFETIME);
+    m_deathParticle.SetOrigin(DEATH_PARTICLE_INACTIVE_LOC,
+                              DEATH_PARTICLE_INACTIVE_LOC,
+                              DEATH_PARTICLE_INACTIVE_LOC);
+    m_deathParticle.SetGenerate(1);
     m_deathParticle.Initialize();
     m_pGame->GetScene()->AddActor(&m_deathParticle);
 
@@ -71,6 +87,7 @@ Spirit::Spirit()
 
     m_nWorkingOrb = 0;
     m_fSpawnTimer = 0.0f; 
+    m_fParticleTimer = 0.0f;
     m_nEliminated = 0;
 
     // Zero out positions
@@ -102,6 +119,8 @@ void Spirit::Update()
     {
         Update_Dead();
     }
+
+    Update_DeathParticle();
 }
 
 void Spirit::Update_Kinematics()
@@ -509,7 +528,9 @@ void Spirit::Update_Dead()
 {
     assert(m_nAlive == 0);
 
-    m_fSpawnTimer -= Game::GetInstance()->DeltaTime();
+    float fDeltaTime = Game::GetInstance()->DeltaTime();
+
+    m_fSpawnTimer -= fDeltaTime;
 
     if (m_fSpawnTimer <= 0.0f)
     {
@@ -550,6 +571,8 @@ void Spirit::SetPlayerIndex(int nIndex)
     m_nPlayerIndex = nIndex;
 
     AssignProperTexture();
+
+    m_deathParticle.SetColor(PARTICLE_MIN_COLORS[nIndex], PARTICLE_MAX_COLORS[nIndex]);
 
     // Set owner for orbs
     for (int i = 0; i < SPIRIT_MAX_ORBS; i++)
@@ -829,6 +852,10 @@ void Spirit::Respawn()
 
     m_nAlive = 1;
 
+    m_deathParticle.SetOrigin(DEATH_PARTICLE_INACTIVE_LOC,
+                              DEATH_PARTICLE_INACTIVE_LOC,
+                              DEATH_PARTICLE_INACTIVE_LOC);
+
     m_matter.SetVisible(1);
 }
 
@@ -843,27 +870,50 @@ void Spirit::PlayDeathParticle()
     float fYVelocity = 0.0f;
 
     float arKillExtents[4] = { 0.0f };
-    float arVelocity[3] = { 0.0f };
-    float arVariance[3] = { 4.0f, 4.0f, 4.0f };
+    float arMinVelocity[3] = { 0.0f };
+    float arMaxVelocity[3] = { 0.0f, 0.0f, 0.0f };
+    float arVariance[3] = { 2.0f, 2.0f, 2.0f };
 
     Game::GetInstance()->GetField()->GetKillExtents(arKillExtents);
 
     if (m_arDeathLoc[0] < arKillExtents[KILL_LEFT])
-        arVelocity[0] = DEATH_PARTICLE_VELOCITY;
+        arMinVelocity[0] = DEATH_PARTICLE_VELOCITY;
     if (m_arDeathLoc[0] > arKillExtents[KILL_RIGHT])
-        arVelocity[0] = -DEATH_PARTICLE_VELOCITY;
+        arMinVelocity[0] = -DEATH_PARTICLE_VELOCITY;
     if (m_arDeathLoc[1] < arKillExtents[KILL_BOTTOM])
-        arVelocity[1] = DEATH_PARTICLE_VELOCITY;
+        arMinVelocity[1] = DEATH_PARTICLE_VELOCITY;
     if (m_arDeathLoc[1] > arKillExtents[KILL_TOP])
-        arVelocity[1] = -DEATH_PARTICLE_VELOCITY;
+        arMinVelocity[1] = -DEATH_PARTICLE_VELOCITY;
+
+    arMaxVelocity[0] = arMinVelocity[0] * DEATH_PARTICLE_VELOCITY_MULT;
+    arMaxVelocity[1] = arMinVelocity[1] * DEATH_PARTICLE_VELOCITY_MULT;
 
     m_deathParticle.SetOrigin(m_arDeathLoc[0],
                               m_arDeathLoc[1],
                               m_arDeathLoc[2]);
-    m_deathParticle.SetVelocity(arVelocity, arVelocity);
-    
+
+    m_deathParticle.SetVelocity(arMinVelocity, arMaxVelocity);
+
     m_deathParticle.SetSpawnVariance(arVariance[0],
                                      arVariance[1],
                                      arVariance[2]);
-    m_deathParticle.SetGenerate(1);
+
+    m_fParticleTimer = DEATH_PARTICLE_TIME;
+}
+
+void Spirit::Update_DeathParticle()
+{
+    float fDeltaTime = Game::GetInstance()->DeltaTime();
+
+    if (m_fParticleTimer > 0.0f)
+    {
+        m_fParticleTimer -= fDeltaTime;
+
+        if (m_fParticleTimer <= 0.0f)
+        {
+            m_deathParticle.SetOrigin(DEATH_PARTICLE_INACTIVE_LOC,
+                DEATH_PARTICLE_INACTIVE_LOC,
+                DEATH_PARTICLE_INACTIVE_LOC);
+        }
+    }
 }
