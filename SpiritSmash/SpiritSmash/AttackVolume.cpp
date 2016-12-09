@@ -17,6 +17,9 @@ AttackVolume::AttackVolume()
     m_matter.SetMaterial(g_pDefaultMaterial);
     m_matter.SetMesh(g_pAttackDebugMesh);
     m_matter.SetTexture(0);
+
+    // ENABLE FOR ATTACK HITBOX DEBUGGGING
+    m_matter.SetVisible(0);
     
     m_matter.SetScale(1.0f, 1.0f, 1.0f);
     m_matter.AddCollider(s_pAttackCollider);

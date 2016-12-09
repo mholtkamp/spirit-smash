@@ -147,6 +147,9 @@ float CameraController::CalculateCameraZ(float* arCenter)
 
     fZ += fMaxDist * CAMERA_Z_SCALE_FACTOR;
 
+    if (fZ < CAMERA_MIN_Z)
+        fZ = CAMERA_MIN_Z;
+
     return fZ;
 }
 

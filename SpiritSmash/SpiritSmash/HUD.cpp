@@ -217,3 +217,17 @@ void HUD::SetTextures(int nIndex)
         m_arLifeBubbles[nIndex][i].SetTexture(g_pCircleTex);
     }
 }
+
+void HUD::Eliminate(int nPlayerIndex)
+{
+    assert(nPlayerIndex >= 0);
+    assert(nPlayerIndex < MAX_PLAYERS);
+
+    m_arPercents[nPlayerIndex].SetVisible(0);
+    m_arBackground[nPlayerIndex].SetVisible(0);
+
+    for (int i = 0; i < SPIRIT_STARTING_LIVES; i++)
+    {
+        m_arLifeBubbles[nPlayerIndex][i].SetVisible(0);
+    }
+}

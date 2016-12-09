@@ -32,6 +32,8 @@ public:
 
     void Reset();
 
+    void Eliminate(int nPlayerIndex);
+
 private:
 
     Text m_arPercents[MAX_PLAYERS];

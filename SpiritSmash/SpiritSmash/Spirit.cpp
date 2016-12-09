@@ -163,13 +163,13 @@ void Spirit::Update()
         Update_Charge();
         Update_Release();
         Update_Animation();
-        Update_Orbs();
     }
     else if (m_nEliminated == 0)
     {
         Update_Dead();
     }
 
+    Update_Orbs();
     Update_DeathParticle();
 }
 
@@ -892,6 +892,13 @@ Orb* Spirit::GetOrbArray()
 void Spirit::Eliminate()
 {
     m_nEliminated = 1;
+
+    Game::GetInstance()->GetHUD()->Eliminate(m_nPlayerIndex);
+
+    for (int i = 0; i < SPIRIT_MAX_ORBS; i++)
+    {
+        m_arOrbs[i].SetState(Orb::ORB_INACTIVE);
+    }
 }
 
 void Spirit::Respawn()
