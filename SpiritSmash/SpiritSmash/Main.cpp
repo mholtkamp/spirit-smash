@@ -58,6 +58,12 @@ int main()
         }
         case STATE_GAME:
             pGame->Update();
+
+            if (pGame->IsFinished())
+            {
+                s_nGameState = STATE_MENU;
+                pMenu->SetCurrentScene();
+            }
             break;
         }
         

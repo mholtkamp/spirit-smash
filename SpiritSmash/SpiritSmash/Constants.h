@@ -129,4 +129,9 @@
 #define TITLE_PARTICLES_MIN_LIFETIME 0.5f
 #define TITLE_PARTICLES_MAX_LIFETIME 0.8f
 
+#define WINNER_X -0.3f
+#define WINNER_Y 0.2f
+#define WINNER_TEXT_SCALE_X 1.0f
+#define WINNER_TEXT_SCALE_Y 1.5f
+
 #endif

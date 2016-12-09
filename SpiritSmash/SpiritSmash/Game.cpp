@@ -10,6 +10,12 @@
 #include "Vakz.h"
 #include <stdio.h>
 
+static float COLOR_1[4] = { 0.2f, 0.2f, 1.0f, 1.0f };
+static float COLOR_2[4] = { 1.0f, 0.2f, 0.2f, 1.0f };
+static float COLOR_3[4] = { 0.2f, 1.0f, 0.2f, 1.0f };
+static float COLOR_4[4] = { 1.0f, 1.0f, 1.0f, 1.0f };
+static float* COLORS[4] = { COLOR_1, COLOR_2, COLOR_3, COLOR_4 };
+
 Game* Game::s_pInstance = 0;
 
 Game* Game::CreateInstance()
@@ -59,7 +65,7 @@ Game::Game()
 
     // Assign camera to camera controller
     m_cameraController.SetCamera(m_pCamera);
-    
+
     m_fDeltaTime = 0.0f;
 
     m_nState = STATE_PLAYING;
@@ -118,6 +124,9 @@ void Game::Start(int nPlayers,
 
     // Setup the HUD that will display lives/percents
     m_pHUD = new HUD();
+
+    // Initialize gameover glyphs owned by Game
+    InitializeGlyphs();
 
     // Disable any test rendering
     Matter::SetGlobalColliderRenderingEnable(0);
@@ -189,13 +198,27 @@ void Game::Update()
         m_pField->Update();
 
         m_cameraController.Update();
+
+        // After all players have moved, resolve their attacks
+        ResolveAttacks();
+
+        // Then resolve orbs
+        ResolveOrbs();
+
+        // Check if we should display gameover screen.
+        CheckGameOver();
     }
-
-    // After all players have moved, resolve their attacks
-    ResolveAttacks();
-
-    // Then resolve orbs
-    ResolveOrbs();
+    else if (m_nState == STATE_GAMEOVER)
+    {
+        for (int i = 0; i < MAX_PLAYERS; i++)
+        {
+            if (IsControllerConnected(i) &&
+                IsControllerButtonJustDown(VCONT_START, i))
+            {
+                m_nState = STATE_FINISHED;
+            }
+        }
+    }
 }
 
 Spirit* Game::GetSpirit(int nPlayerIndex)
@@ -352,4 +375,76 @@ Field* Game::GetField()
 HUD* Game::GetHUD()
 {
     return m_pHUD;
+}
+
+void Game::InitializeGlyphs()
+{
+    // Set up the winner quad/text
+    m_quadBlack.SetColor(0.0f, 0.0f, 0.0f, 1.0f);
+    m_quadBlack.SetDimensions(2.0f, 2.0f);
+    m_quadBlack.SetPosition(-1.0f, -1.0f);
+    m_quadBlack.SetVisible(0);
+    m_textWinner.SetPosition(WINNER_X, 
+                             WINNER_Y);
+    m_textWinner.SetScale(WINNER_TEXT_SCALE_X,
+                          WINNER_TEXT_SCALE_Y);
+    m_textWinner.SetVisible(0);
+
+    m_pScene->AddGlyph(&m_quadBlack);
+    m_pScene->AddGlyph(&m_textWinner);
+}
+
+void Game::SetGameOver(Spirit* pWinner)
+{
+    m_nState = STATE_GAMEOVER;
+
+    m_quadBlack.SetVisible(1);
+    m_textWinner.SetVisible(1);
+
+    char arBuffer[32] = { 0 };
+    if (pWinner != 0)
+    {
+        sprintf(arBuffer, "Player %d Wins!", pWinner->GetPlayerIndex() + 1);
+    }
+    else
+    {
+        sprintf(arBuffer, "DRAW");
+    }
+    
+    m_textWinner.SetText(arBuffer);
+    if (pWinner != 0)
+    {
+        m_textWinner.SetColor(COLORS[pWinner->GetPlayerIndex()]);
+    }
+    else
+    {
+        m_textWinner.SetColor(1.0f, 1.0f, 1.0f, 1.0f);
+    }
+}
+
+int Game::IsFinished()
+{
+    return (m_nState == STATE_FINISHED);
+}
+
+void Game::CheckGameOver()
+{
+    int nRemaining = 0;
+
+    Spirit* pSpirit = 0;
+
+    for (int i = 0; i < MAX_PLAYERS; i++)
+    {
+        if (m_arSpirit[i] != 0 &&
+            !m_arSpirit[i]->IsEliminated())
+        {
+            nRemaining++;
+            pSpirit = m_arSpirit[i];
+        }
+    }
+
+    if (nRemaining <= 1)
+    {
+        SetGameOver(pSpirit);
+    }
 }

@@ -15,9 +15,10 @@ class Game
         STATE_INVALID   = -1,
         STATE_WAITING   = 0,
         STATE_PLAYING   = 1,
-        STATE_FINISHED  = 2,
-        STATE_PAUSED    = 3,
-        NUM_GAME_STATES = 4
+        STATE_GAMEOVER  = 2,
+        STATE_FINISHED  = 3,
+        STATE_PAUSED    = 4,
+        NUM_GAME_STATES = 5
     };
 
 public:
@@ -53,11 +54,19 @@ public:
 
     int InDebugMode();
 
+    void InitializeGlyphs();
+
     void SetCurrentScene();
+
+    void SetGameOver(Spirit* pWinner);
+
+    int IsFinished();
 
 private:
 
     Game();
+
+    void CheckGameOver();
 
     static Game* s_pInstance;
 
@@ -74,6 +83,9 @@ private:
     float m_fDeltaTime;
 
     int m_nDebugMode;
+
+    Quad m_quadBlack;
+    Text m_textWinner;
 
     CameraController m_cameraController;
 };

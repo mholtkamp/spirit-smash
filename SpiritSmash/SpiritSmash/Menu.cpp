@@ -51,8 +51,7 @@ int Menu::Update()
                 SetNumPlayers(m_nNumPlayers - 1);
             }
 
-            if (IsControllerButtonJustDown(VCONT_START, i) ||
-                IsControllerButtonJustDown(VCONT_A, i))
+            if (IsControllerButtonJustDown(VCONT_START, i))
             {
                 nRet = 1;
             }
