@@ -29,6 +29,8 @@ public:
 
     ~Game();
 
+    void Reset();
+
     void Update();
 
     void ResolveAttacks();

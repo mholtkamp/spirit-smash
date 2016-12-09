@@ -24,25 +24,43 @@ HUD::HUD()
         if (Game::GetInstance()->GetSpirit(i) != 0)
         {
             SetPlayerEnable(i, 1);
-            RegisterGlyphs(i);
-            SetLives(i, SPIRIT_STARTING_LIVES);
-            SetPercent(i, 0);
-            SetColors(i, COLORS[i]);
-            SetTextures(i);
-            InitializePosition(i);
-
-            SetPercent(i, 0);
         }
         else
         {
             SetPlayerEnable(i, 0);
         }
+
+        RegisterGlyphs(i);
     }
+
+    Reset();
 }
 
 HUD::~HUD()
 {
 
+}
+
+void HUD::Reset()
+{
+    for (int i = 0; i < MAX_PLAYERS; i++)
+    {
+        if (Game::GetInstance()->GetSpirit(i) != 0)
+        {
+            SetPlayerEnable(i, 1);
+        }
+        else
+        {
+            SetPlayerEnable(i, 0);
+        }
+
+        SetLives(i, SPIRIT_STARTING_LIVES);
+        SetPercent(i, 0);
+        SetColors(i, COLORS[i]);
+        SetTextures(i);
+        InitializePosition(i);
+        SetPercent(i, 0);
+    }
 }
 
 void HUD::SetPercent(int nPlayerIndex,
@@ -104,7 +122,10 @@ void HUD::SetLives(int nPlayerIndex,
 
     for (int i = 0; i < SPIRIT_STARTING_LIVES; i++)
     {
-        m_arLifeBubbles[nPlayerIndex][i].SetVisible(nLives > i ? 1 : 0);
+        if (m_arPlayerEnabled[nPlayerIndex] != 0)
+        {
+            m_arLifeBubbles[nPlayerIndex][i].SetVisible(nLives > i ? 1 : 0);
+        }
     }
 }
 

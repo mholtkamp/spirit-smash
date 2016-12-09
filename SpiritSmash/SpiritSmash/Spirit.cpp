@@ -103,6 +103,56 @@ Spirit::~Spirit()
 
 }
 
+void Spirit::Reset()
+{
+    // Update matter to act correclty
+    m_matter.SetAnimation("Idle");
+    m_matter.SetVisible(1);
+    m_matter.SetRotation(0.0f, 0.0f, 0.0f);
+
+    // Make sure particles are deactivated 
+    m_deathParticle.SetOrigin(DEATH_PARTICLE_INACTIVE_LOC,
+                              DEATH_PARTICLE_INACTIVE_LOC,
+                              DEATH_PARTICLE_INACTIVE_LOC);
+
+    // Reset stats
+    m_nPercent = 0;
+    m_nLives   = SPIRIT_STARTING_LIVES;
+    m_nDamage  = SPIRIT_DEFAULT_DAMAGE;
+
+    // Reset movement related variables
+    m_nJumpCharges = 0;
+    m_nGrounded = 0;
+    m_fSpeed = SPIRIT_DEFAULT_SPEED;
+    m_fAcceleration = SPIRIT_DEFAULT_ACCELERATION;
+    m_nJumpPressed = SPIRIT_JUMP_FRAME_WINDOW;
+    m_nJustJumped = 0;
+
+    m_nDirection = DIRECTION_RIGHT;
+
+    m_fXVelocity = 0.0f;
+    m_fYVelocity = 0.0f;
+
+    m_nAnimState = ANIM_IDLE;
+
+    m_fAttackTime = 0.0f;
+
+    m_nAlive = 1;
+    m_nAction = ACTION_NONE;
+
+    m_nWorkingOrb = 0;
+    m_fSpawnTimer = 0.0f;
+    m_fParticleTimer = 0.0f;
+    m_nEliminated = 0;
+
+    // Zero out positions
+    for (int i = 0; i < 3; i++)
+    {
+        m_arSpawnLoc[i] = 0.0f;
+        m_arDeathLoc[i] = 0.0f;
+    }
+}
+
 void Spirit::Update()
 {
     if (m_nAlive != 0)

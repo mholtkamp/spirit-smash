@@ -35,6 +35,8 @@ public:
 	Spirit();
 	~Spirit();
 
+    void Reset();
+
 	void Update();
 
     void SetPlayerIndex(int nIndex);

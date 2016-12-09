@@ -51,6 +51,8 @@ Game::Game()
     m_arSpirit[2] = 0;
     m_arSpirit[3] = 0;
 
+    m_pHUD = 0;
+
     m_pScene = new Scene();
     m_pScene->SetAmbientLight(LIGHTING_AMBIENT_INTENSITY, 
                               LIGHTING_AMBIENT_INTENSITY, 
@@ -86,6 +88,32 @@ Game::~Game()
     }    
 }
 
+void Game::Reset()
+{
+    // Reset ALL the data. 
+
+    m_nState = STATE_PLAYING;
+
+    for (int i = 0; i < MAX_PLAYERS; i++)
+    {
+        if (m_arSpirit[i] != 0)
+        {
+            m_arSpirit[i]->Reset();
+        }
+    }
+    m_pField->Reset();
+    m_pHUD->Reset();
+
+    // Reset the timer to make sure there is no crazy jumps
+    m_timer.Start();
+    m_fDeltaTime = 0.0f;
+
+    m_nDebugMode = 0;
+
+    m_quadBlack.SetVisible(0);
+    m_textWinner.SetVisible(0);
+}
+
 void Game::SetCurrentScene()
 {
     SetScene(m_pScene);
@@ -102,28 +130,38 @@ void Game::Start(int nPlayers,
     m_nNumPlayers = nPlayers;
 
     // First generate the battlefield
-
-    switch (nField)
+    if (m_pField == 0)
     {
-    case FIELD_TYPE_FOREST:
-        m_pField = new ForestField();
-        break;
-    default:
-        break;
+        switch (nField)
+        {
+        case FIELD_TYPE_FOREST:
+            m_pField = new ForestField();
+            break;
+        default:
+            break;
+        }
+
+        m_pField->Generate();
     }
 
-    m_pField->Generate();
 
     // Create the spirits that will be controlled by players
     for (i = 0; i < nPlayers; i++)
     {
-        m_arSpirit[i] = new Spirit();
-        m_arSpirit[i]->SetPlayerIndex(i);
+        if (m_arSpirit[i] == 0)
+        {
+            m_arSpirit[i] = new Spirit();
+            m_arSpirit[i]->SetPlayerIndex(i);
+        }
         m_pField->SetStartPosition(m_arSpirit[i], i);
     }
 
     // Setup the HUD that will display lives/percents
-    m_pHUD = new HUD();
+    if (m_pHUD == 0)
+    {
+        m_pHUD = new HUD();
+    }
+    m_pHUD->Reset();
 
     // Initialize gameover glyphs owned by Game
     InitializeGlyphs();

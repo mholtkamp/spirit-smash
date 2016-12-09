@@ -93,3 +93,8 @@ void Field::GetKillExtents(float* arOutExtents)
         arOutExtents[i] = m_arKillExtents[i];
     }
 }
+
+void Field::Reset()
+{
+
+}

@@ -62,6 +62,16 @@ int main()
             if (pGame->IsFinished())
             {
                 s_nGameState = STATE_MENU;
+                pGame->Reset();
+
+                // There seems to be only a very small video memory leak
+                // when destroying a game, and maybe a very small
+                // system memory leak too, however I didn't verify this.
+                // Destroying and reinstantiating the game singleton 
+                // seems to be the safest way of restoring the state
+                // for a new game.
+                Game::DestroyInstance();
+                pGame = Game::CreateInstance();
                 pMenu->SetCurrentScene();
             }
             break;

@@ -15,6 +15,8 @@ public:
 
     virtual void Update();
 
+    virtual void Reset();
+
     void SpawnSpirit(class Spirit* pSpirit);
 
     int IsOutOfKillBounds(float fX,

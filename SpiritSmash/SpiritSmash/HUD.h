@@ -30,6 +30,8 @@ public:
 
     void SetTextures(int nIndex);
 
+    void Reset();
+
 private:
 
     Text m_arPercents[MAX_PLAYERS];
